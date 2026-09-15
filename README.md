@@ -88,7 +88,9 @@ git clone https://github.com/SAVAGE-dot/springboot-II.git
 cd springboot-II
 ```
 
-Crear su rama y trabajar:
+### Cómo crear su rama (una sola vez)
+
+Una **rama** es una copia de trabajo paralela a `main`. Cada integrante crea la suya para no pisar el código de los demás. El nombre de la rama es el de su frente (tabla de abajo). El ejemplo usa `feature/p2-security`; cada uno cambia esa parte por **su** rama.
 
 ```
 git checkout main
@@ -96,7 +98,21 @@ git pull origin main
 git checkout -b feature/p2-security
 ```
 
-Sustituir la rama según el frente:
+Qué hace cada comando:
+
+1. `git checkout main` — se posiciona en la rama estable del equipo.
+2. `git pull origin main` — descarga lo último que ya está en GitHub, para no partir de un `main` viejo.
+3. `git checkout -b feature/p2-security` — **crea** la rama nueva (`-b`) y entra en ella. A partir de aquí, todos los commits quedan en esa rama, no en `main`.
+
+Si ya la crearon y solo quieren seguir trabajando otro día:
+
+```
+git checkout feature/p2-security
+```
+
+No vuelvan a usar `-b` si la rama ya existe (Git dirá que ya está creada).
+
+Nombre de rama según el frente:
 
 | Integrante | Rama |
 |---|---|
