@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${titulo}">CiberBus</title>
+    <style>
+        body { font-family: Segoe UI, Arial, sans-serif; margin: 0; background: #f4f7fa; color: #1a1a1a; }
+        header { background: #1b365d; color: #fff; padding: 28px 32px; }
+        header p { margin: 6px 0 0; color: #c5a46e; }
+        main { padding: 32px; max-width: 720px; }
+        h2 { color: #1b365d; }
+        ul { line-height: 1.7; }
+        footer { padding: 16px 32px; color: #5b6570; font-size: 13px; }
+    </style>
+</head>
+<body>
+<header>
+    <h1>CiberBus</h1>
+    <p>Curso 5484 · Lenguaje de Programación II · Spring Boot</p>
+</header>
+<main>
+    <h2>El proyecto arrancó</h2>
+    <p>Ciudades cargadas en la base: <strong th:text="${totalCiudades}">0</strong></p>
+    <p>Arquitectura en capas (MVC + Service + Repository). Cada integrante trabaja en su frente:</p>
+    <ul>
+        <li><strong>P1 Ernesto Silva</strong> — arquitectura e integración</li>
+        <li><strong>P2 Cristian Arellano</strong> — seguridad y usuarios</li>
+        <li><strong>P3 Antonio Ospina</strong> — maestros</li>
+        <li><strong>P4 Kelly Yaipen</strong> — viajes y asientos (delegada)</li>
+        <li><strong>P5 Brando Sandoval</strong> — reserva y autogestión</li>
+        <li><strong>P6 Luis Paredes</strong> — frontend e interfaz</li>
+    </ul>
+</main>
+<footer>Equipo CiberBus · no usar Servlets ni JSP en este proyecto</footer>
+</body>
+</html>

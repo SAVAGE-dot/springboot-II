@@ -1,0 +1,14 @@
+target/
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+.vscode/
+*.log
+.DS_Store
+application-local.yml
+*.xlsx
+_build_plan_excel.py
+__pycache__/
+.cursor/

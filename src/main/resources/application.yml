@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: ciberbus
+  datasource:
+    url: jdbc:mysql://localhost:3306/bd_reserva_buses?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=America/Lima
+    username: root
+    password: 1234
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    open-in-view: false
+  thymeleaf:
+    cache: false
+
+server:
+  port: 8080
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    com.ciberbus: info
