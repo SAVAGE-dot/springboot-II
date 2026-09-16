@@ -21,6 +21,8 @@ public class Viaje {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IdViaje")
     private Integer idViaje;
+    
+    // hola prueba
 
     @Column(name = "CodigoViaje", nullable = false, unique = true, length = 20)
     private String codigoViaje;
