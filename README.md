@@ -62,6 +62,24 @@ Servicios por frente:
 
 P5 consume `ViajeService.buscar()` y `listarAsientos()`. No use `ViajeAsientoRepository` directo.
 
+## ¿Dónde están los JSP?
+
+**En este repositorio no hay JSP, y no deben aparecer.** El prototipo anterior (Eclipse + Servlets + `webapp/*.jsp`) se reemplazó por Spring Boot. GitHub no está incompleto: las pantallas ahora son HTML de Thymeleaf.
+
+| Antes (no va en este repo) | Ahora |
+|---|---|
+| `src/main/webapp/*.jsp` | `src/main/resources/templates/*.html` |
+| Servlets en `controladores/` | Clases en `com.ciberbus.controller` |
+| `MySQLConexion.java` | Spring Data JPA (`application.yml` + `repository`) |
+| Tomcat desplegando un WAR | `.\mvnw.cmd spring-boot:run` → http://localhost:8080 |
+
+Páginas que ya existen para probar:
+
+- `src/main/resources/templates/inicio.html` — inicio (`/` y `/inicio`)
+- `src/main/resources/templates/error.html` — errores
+
+Login, destinos, asientos, reserva y el panel admin **aún no están**: las crea cada frente en Thymeleaf (no copiando JSP). El proyecto JSP viejo se queda en la carpeta local `ProspectoProyectoCiberBus` solo como referencia; no se sube aquí.
+
 ## Cómo arrancar
 
 1. Clonar (ver comandos abajo).
