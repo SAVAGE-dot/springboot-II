@@ -22,7 +22,7 @@ public class Viaje {
     @Column(name = "IdViaje")
     private Integer idViaje;
     
-    // hola prueba
+    // hola prueba 2
 
     @Column(name = "CodigoViaje", nullable = false, unique = true, length = 20)
     private String codigoViaje;
