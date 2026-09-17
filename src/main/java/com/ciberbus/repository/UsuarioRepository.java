@@ -9,4 +9,8 @@ import com.ciberbus.entity.Usuario;
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 
     Optional<Usuario> findByCorreo(String correo);
+
+    Optional<Usuario> findByNroDocumento(String nroDocumento);
+
+    boolean existsByNroDocumento(String nroDocumento);
 }
