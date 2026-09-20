@@ -12,3 +12,5 @@ application-local.yml
 _build_plan_excel.py
 __pycache__/
 .cursor/
+log-error.txt
+log-arranque.txt

@@ -10,7 +10,12 @@ public interface UsuarioService {
 
     Optional<Usuario> buscarPorCorreo(String correo);
 
+    Optional<Usuario> buscarPorNroDocumento(String nroDocumento);
+
     List<Usuario> listar();
 
     Usuario guardar(Usuario usuario);
+
+    /** Registra un usuario nuevo encriptando su clave con BCrypt. */
+    Usuario registrar(Usuario usuario);
 }
