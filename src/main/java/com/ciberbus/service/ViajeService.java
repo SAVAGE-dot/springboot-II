@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import com.ciberbus.entity.Ciudad;
+import com.ciberbus.entity.Ruta;
 import com.ciberbus.entity.Viaje;
 import com.ciberbus.entity.ViajeAsiento;
 
@@ -17,9 +19,19 @@ public interface ViajeService {
 
     Optional<Viaje> buscarPorId(Integer id);
 
+    Viaje buscarDetallePorId(Integer id);
+
     Viaje guardar(Viaje viaje);
+
+    List<Ciudad> listarOrigenesDisponibles();
+
+    List<Ruta> listarDestinosPorOrigen(Integer idOrigen);
+
+    List<Viaje> buscarDisponiblesPorRutaYFecha(Integer rutaId, LocalDate fecha);
 
     List<Viaje> buscar(Integer idOrigen, Integer idDestino, LocalDate fecha);
 
     List<ViajeAsiento> listarAsientos(Integer idViaje);
+
+    List<ViajeAsiento> validarAsientosSeleccionados(Integer idViaje, List<Integer> idsAsiento);
 }

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Resumen de viaje · CiberBus</title>
+    <style>
+        body { background: #f4f7fa; color: #1a1a1a; font-family: Segoe UI, Arial, sans-serif; margin: 0; }
+        header { background: #1b365d; color: #fff; padding: 24px 32px; }
+        main { margin: 0 auto; max-width: 760px; padding: 28px; }
+        .tarjeta { background: #fff; border: 1px solid #dbe2ea; border-radius: 8px; margin: 16px 0; padding: 20px; }
+        .fila { border-bottom: 1px solid #e7ebef; padding: 10px 0; }
+        .total { color: #176b3a; font-size: 24px; }
+        a { color: #1b365d; }
+    </style>
+</head>
+<body>
+<header><h1>Resumen de selección</h1><p>No se ha creado ninguna reserva.</p></header>
+<main>
+    <p><a th:href="@{/viajes/{id}/asientos(id=${viaje.idViaje},rutaId=${rutaId},fecha=${fecha},asientoIds=${asientoIds})}">← Modificar asientos</a></p>
+    <section class="tarjeta">
+        <h2 th:text="${viaje.codigoViaje}">Viaje</h2>
+        <p th:text="|${viaje.ruta.ciudadPartida.ciudad} → ${viaje.ruta.ciudadLlegada.ciudad}|">Ruta</p>
+        <p th:text="|Salida: ${viaje.fechaSalida} ${viaje.horaSalida}|">Salida</p>
+        <p th:text="|Bus: ${viaje.bus.tipoBus} · ${viaje.bus.nroAsientos} asientos|">Bus</p>
+    </section>
+    <section class="tarjeta">
+        <h2>Asientos elegidos</h2>
+        <div class="fila" th:each="asiento : ${asientos}" th:text="|Piso ${asiento.piso}, asiento ${asiento.nroAsiento} · S/ ${viaje.tarifa}|">Asiento</div>
+        <p class="total" th:text="|Total estimado: S/ ${total}|">Total</p>
+    </section>
+    <p><a th:if="${rutaId != null and fecha != null}" th:href="@{/viajes/buscar(rutaId=${rutaId},fecha=${fecha})}">Buscar otro viaje</a></p>
+</main>
+</body>
+</html>

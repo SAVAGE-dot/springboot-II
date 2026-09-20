@@ -10,7 +10,10 @@
         header p { margin: 6px 0 0; color: #c5a46e; }
         main { padding: 32px; max-width: 720px; }
         h2 { color: #1b365d; }
-        ul { line-height: 1.7; }
+        label { display: block; font-weight: 600; margin-top: 16px; }
+        select, input, button { box-sizing: border-box; font: inherit; padding: 10px; width: 100%; }
+        button { background: #c5a46e; border: 0; color: #172d4d; cursor: pointer; font-weight: 700; margin-top: 20px; }
+        .note { color: #5b6570; font-size: 14px; }
         footer { padding: 16px 32px; color: #5b6570; font-size: 13px; }
     </style>
 </head>
@@ -20,17 +23,34 @@
     <p>Curso 5484 · Lenguaje de Programación II · Spring Boot</p>
 </header>
 <main>
-    <h2>El proyecto arrancó</h2>
-    <p>Ciudades cargadas en la base: <strong th:text="${totalCiudades}">0</strong></p>
-    <p>Arquitectura en capas (MVC + Service + Repository). Cada integrante trabaja en su frente:</p>
-    <ul>
-        <li><strong>P1 Ernesto Silva</strong> — arquitectura e integración</li>
-        <li><strong>P2 Cristian Arellano</strong> — seguridad y usuarios</li>
-        <li><strong>P3 Antonio Ospina</strong> — maestros</li>
-        <li><strong>P4 Kelly Yaipen</strong> — viajes y asientos (delegada)</li>
-        <li><strong>P5 Brando Sandoval</strong> — reserva y autogestión</li>
-        <li><strong>P6 Luis Paredes</strong> — frontend e interfaz</li>
-    </ul>
+    <h2>Busca tu próximo viaje</h2>
+    <p class="note">Prueba inicial de P4: origen y destinos disponibles según las rutas registradas.</p>
+
+    <form method="get" th:action="@{/viajes/buscar}">
+        <label for="origenId">Origen</label>
+        <select id="origenId" name="origenId" onchange="window.location.href='/?origenId=' + this.value">
+            <option value="">Seleccione un origen</option>
+            <option th:each="origen : ${origenes}"
+                    th:value="${origen.idCiudad}"
+                    th:text="${origen.ciudad}"
+                    th:selected="${origen.idCiudad == origenId}">Ciudad de origen</option>
+        </select>
+
+        <label for="rutaId">Destino</label>
+        <select id="rutaId" name="rutaId" required th:disabled="${#lists.isEmpty(destinos)}">
+            <option value="" th:text="${#lists.isEmpty(destinos) ? 'Seleccione primero un origen' : 'Seleccione un destino'}">Seleccione un destino</option>
+            <option th:each="ruta : ${destinos}"
+                    th:value="${ruta.idRuta}"
+                    th:text="${ruta.ciudadLlegada.ciudad}">Ciudad de destino</option>
+        </select>
+
+        <label for="fecha">Fecha de viaje</label>
+        <input id="fecha" name="fecha" type="date" required>
+
+        <button type="submit" th:disabled="${#lists.isEmpty(destinos)}">Buscar viajes</button>
+    </form>
+
+    <p class="note">Ciudades cargadas en la base: <strong th:text="${totalCiudades}">0</strong></p>
 </main>
 <footer>Equipo CiberBus · no usar Servlets ni JSP en este proyecto</footer>
 </body>

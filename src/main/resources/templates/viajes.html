@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Viajes disponibles · CiberBus</title>
+    <style>
+        body { font-family: Segoe UI, Arial, sans-serif; margin: 0; background: #f4f7fa; color: #1a1a1a; }
+        header { background: #1b365d; color: #fff; padding: 28px 32px; }
+        main { max-width: 900px; margin: 0 auto; padding: 32px; }
+        .viaje { background: #fff; border: 1px solid #dbe2ea; border-radius: 8px; margin: 14px 0; padding: 20px; }
+        .datos { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+        .etiqueta { color: #5b6570; display: block; font-size: 13px; }
+        a { color: #1b365d; }
+        .aviso { background: #fff3cd; border: 1px solid #ffe69c; border-radius: 8px; padding: 16px; }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Viajes disponibles</h1>
+    <p th:text="|Fecha consultada: ${fecha}|">Fecha consultada</p>
+</header>
+<main>
+    <p><a th:href="@{/}">← Volver a la búsqueda</a></p>
+
+    <div class="aviso" th:if="${#lists.isEmpty(viajes)}">
+        No se encontraron viajes disponibles para la ruta y fecha seleccionadas.
+    </div>
+
+    <article class="viaje" th:each="viaje : ${viajes}">
+        <h2 th:text="${viaje.codigoViaje}">VIA-001</h2>
+        <div class="datos">
+            <div>
+                <span class="etiqueta">Ruta</span>
+                <strong th:text="|${viaje.ruta.ciudadPartida.ciudad} → ${viaje.ruta.ciudadLlegada.ciudad}|">Origen → destino</strong>
+            </div>
+            <div>
+                <span class="etiqueta">Salida</span>
+                <strong th:text="${viaje.horaSalida}">08:00</strong>
+            </div>
+            <div>
+                <span class="etiqueta">Llegada</span>
+                <strong th:text="|${viaje.fechaLlegada} ${viaje.horaLlegada}|">Fecha y hora</strong>
+            </div>
+            <div>
+                <span class="etiqueta">Bus / asientos</span>
+                <strong th:text="|${viaje.bus.tipoBus} · ${viaje.bus.nroAsientos} asientos|">Bus</strong>
+            </div>
+            <div>
+                <span class="etiqueta">Tarifa</span>
+                <strong th:text="|S/ ${viaje.tarifa}|">S/ 0.00</strong>
+            </div>
+            <div>
+                <a th:href="@{/viajes/{id}/asientos(id=${viaje.idViaje},rutaId=${viaje.ruta.idRuta},fecha=${fecha})}">Elegir asientos</a>
+            </div>
+        </div>
+    </article>
+</main>
+</body>
+</html>

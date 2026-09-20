@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Elegir asientos · CiberBus</title>
+    <style>
+        body { background: #f4f7fa; color: #1a1a1a; font-family: Segoe UI, Arial, sans-serif; margin: 0; }
+        header { background: #1b365d; color: #fff; padding: 24px 32px; }
+        main { margin: 0 auto; max-width: 900px; padding: 28px; }
+        .detalle, .resumen { background: #fff; border: 1px solid #dbe2ea; border-radius: 8px; margin: 16px 0; padding: 18px; }
+        .detalle-grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); }
+        .etiqueta { color: #5b6570; display: block; font-size: 13px; }
+        .leyenda { display: flex; gap: 16px; margin: 18px 0; }
+        .leyenda span { border-radius: 4px; padding: 7px 10px; }
+        .disponible { background: #fff; border: 1px solid #1b365d; color: #1b365d; }
+        .seleccionado { background: #1b365d; color: #fff; }
+        .ocupado { background: #9aa3ad; color: #fff; }
+        .mapa { background: #fff; border: 2px solid #1b365d; border-radius: 22px 22px 8px 8px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; padding: 26px; }
+        .asiento { border-radius: 6px; cursor: pointer; font-weight: 700; height: 48px; width: 70px; }
+        .asiento:disabled { cursor: not-allowed; }
+        .continuar { background: #c5a46e; border: 0; cursor: pointer; font-size: 16px; font-weight: 700; padding: 12px 18px; }
+        a { color: #1b365d; }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Elige tus asientos</h1>
+    <p th:text="|${viaje.ruta.ciudadPartida.ciudad} → ${viaje.ruta.ciudadLlegada.ciudad} · ${viaje.fechaSalida} ${viaje.horaSalida}|">Ruta</p>
+</header>
+<main>
+    <p><a th:if="${rutaId != null and fecha != null}" th:href="@{/viajes/buscar(rutaId=${rutaId},fecha=${fecha})}">← Volver a los viajes</a></p>
+    <section class="detalle">
+        <div class="detalle-grid">
+            <div><span class="etiqueta">Código</span><strong th:text="${viaje.codigoViaje}">VIAJE</strong></div>
+            <div><span class="etiqueta">Bus</span><strong th:text="${viaje.bus.tipoBus}">Bus</strong></div>
+            <div><span class="etiqueta">Tarifa por asiento</span><strong th:text="|S/ ${viaje.tarifa}|">S/ 0.00</strong></div>
+        </div>
+    </section>
+
+    <div class="leyenda"><span class="disponible">Disponible</span><span class="seleccionado">Seleccionado</span><span class="ocupado">Ocupado</span></div>
+    <form th:action="@{/viajes/resumen}" method="post" id="formAsientos">
+        <input name="idViaje" th:value="${viaje.idViaje}" type="hidden">
+        <input name="rutaId" th:value="${rutaId}" type="hidden">
+        <input name="fecha" th:value="${fecha}" type="hidden">
+        <input id="asientoIds" name="asientoIds" type="hidden">
+        <section class="mapa">
+            <button class="asiento disponible" th:each="asiento : ${asientos}" type="button"
+                    th:classappend="${asiento.estado == 1} ? '' : ' ocupado'"
+                    th:disabled="${asiento.estado != 1}"
+                    th:data-id="${asiento.idViajeAsiento}"
+                    th:data-etiqueta="|P${asiento.piso} - ${asiento.nroAsiento}|"
+                    th:data-seleccionado="${asientosSeleccionados.contains(asiento.idViajeAsiento)}"
+                    th:text="|P${asiento.piso} - ${asiento.nroAsiento}|">P1 - 1</button>
+        </section>
+        <section class="resumen">
+            <span class="etiqueta">Asientos seleccionados</span>
+            <strong id="seleccion">Ninguno</strong>
+            <span class="etiqueta">Total estimado</span>
+            <strong id="total" th:data-tarifa="${viaje.tarifa}">S/ 0.00</strong>
+            <p><button class="continuar" type="submit">Ver resumen</button></p>
+            <small>La selección no crea una reserva ni bloquea los asientos.</small>
+        </section>
+    </form>
+</main>
+<script>
+const seleccionados = Array.from(document.querySelectorAll('.asiento[data-seleccionado="true"]'))
+  .map(boton => boton.dataset.id);
+const tarifa = Number(document.getElementById('total').dataset.tarifa);
+function actualizarResumen() {
+  document.getElementById('asientoIds').value = seleccionados.join(',');
+  const etiquetas = seleccionados.map(id => document.querySelector(`.asiento[data-id="${id}"]`)?.dataset.etiqueta);
+  document.getElementById('seleccion').textContent = etiquetas.length ? etiquetas.join(', ') : 'Ninguno';
+  document.getElementById('total').textContent = `S/ ${(seleccionados.length * tarifa).toFixed(2)}`;
+}
+seleccionados.forEach(id => document.querySelector(`.asiento[data-id="${id}"]`).classList.add('seleccionado'));
+document.querySelectorAll('.asiento:not(:disabled)').forEach(boton => boton.addEventListener('click', () => {
+  const id = boton.dataset.id;
+  const indice = seleccionados.indexOf(id);
+  if (indice >= 0) { seleccionados.splice(indice, 1); boton.classList.remove('seleccionado'); }
+  else { if (seleccionados.length === 5) { alert('Solo puede seleccionar hasta 5 asientos.'); return; } seleccionados.push(id); boton.classList.add('seleccionado'); }
+  actualizarResumen();
+}));
+actualizarResumen();
+document.getElementById('formAsientos').addEventListener('submit', event => { if (!seleccionados.length) { event.preventDefault(); alert('Seleccione al menos un asiento.'); } });
+</script>
+</body>
+</html>

@@ -1,3 +1,5 @@
+-- Estructura completa y limpia de CiberBus.
+-- Ejecutar primero; este archivo reinicia la base de datos.
 DROP DATABASE IF EXISTS bd_reserva_buses;
 CREATE DATABASE bd_reserva_buses
 CHARACTER SET utf8mb4
@@ -12,7 +14,7 @@ CREATE TABLE ciudad (
     IdCiudad INT AUTO_INCREMENT PRIMARY KEY,
     Ciudad VARCHAR(100) NOT NULL,
     Departamento VARCHAR(100) NOT NULL,
-    Estado TINYINT(1) NOT NULL DEFAULT 1
+    Estado INT NOT NULL DEFAULT 1
 );
 
 -- =====================================================
@@ -23,7 +25,7 @@ CREATE TABLE turno (
     Nombre VARCHAR(50) NOT NULL,
     HoraInicio TIME NOT NULL,
     HoraFin TIME NOT NULL,
-    Estado TINYINT(1) NOT NULL DEFAULT 1
+    Estado INT NOT NULL DEFAULT 1
 );
 
 -- =====================================================
@@ -34,9 +36,9 @@ CREATE TABLE bus (
     NroPlaca VARCHAR(15) NOT NULL,
     Marca VARCHAR(50) NOT NULL,
     TipoBus VARCHAR(50) NOT NULL,
-    CantidadPisos TINYINT NOT NULL,
+    CantidadPisos INT NOT NULL,
     NroAsientos INT NOT NULL,
-    Estado TINYINT(1) NOT NULL DEFAULT 1,
+    Estado INT NOT NULL DEFAULT 1,
     CONSTRAINT uq_bus_nroplaca UNIQUE (NroPlaca)
 );
 
@@ -50,11 +52,13 @@ CREATE TABLE usuario (
     Nombre VARCHAR(50) NOT NULL,
     Apellido VARCHAR(50) NOT NULL,
     Correo VARCHAR(100),
+    Clave VARCHAR(100),
     Telefono VARCHAR(20),
     FechaNacimiento DATE,
     Nacionalidad VARCHAR(50),
     Genero VARCHAR(10),
-    Estado TINYINT(1) NOT NULL DEFAULT 1,
+    Rol VARCHAR(20) NOT NULL DEFAULT 'CLIENTE',
+    Estado INT NOT NULL DEFAULT 1,
     CONSTRAINT uq_usuario_documento UNIQUE (NroDocumento),
     CONSTRAINT uq_usuario_correo UNIQUE (Correo)
 );
@@ -73,7 +77,7 @@ CREATE TABLE pasajero (
     FechaNacimiento DATE,
     Nacionalidad VARCHAR(50),
     Genero VARCHAR(20),
-    Estado TINYINT(1) NOT NULL DEFAULT 1,
+    Estado INT NOT NULL DEFAULT 1,
     CONSTRAINT uq_pasajero_documento UNIQUE (NroDocumento),
     CONSTRAINT uq_pasajero_correo UNIQUE (Correo)
 );
@@ -93,7 +97,7 @@ CREATE TABLE conductor (
     VencimientoLicencia DATE NOT NULL,
     IdTurno INT NOT NULL,
     DiaDescanso VARCHAR(20),
-    Estado TINYINT(1) NOT NULL DEFAULT 1,
+    Estado INT NOT NULL DEFAULT 1,
     CONSTRAINT uq_conductor_documento UNIQUE (NroDocumento),
     CONSTRAINT uq_conductor_correo UNIQUE (Correo),
     CONSTRAINT fk_conductor_turno
@@ -108,7 +112,7 @@ CREATE TABLE ruta (
     CiudadPartida INT NOT NULL,
     CiudadLlegada INT NOT NULL,
     HorasEstimadas DECIMAL(4,2) NOT NULL,
-    Estado TINYINT(1) NOT NULL DEFAULT 1,
+    Estado INT NOT NULL DEFAULT 1,
     CONSTRAINT fk_ruta_ciudad_partida
         FOREIGN KEY (CiudadPartida) REFERENCES ciudad(IdCiudad),
     CONSTRAINT fk_ruta_ciudad_llegada
@@ -131,7 +135,7 @@ CREATE TABLE viaje (
     FechaLlegada DATE NOT NULL,
     HoraLlegada TIME NOT NULL,
     Tarifa DECIMAL(6,2) NOT NULL,
-    Estado TINYINT NOT NULL DEFAULT 1,
+    Estado INT NOT NULL DEFAULT 1,
     CONSTRAINT uq_viaje_codigo UNIQUE (CodigoViaje),
     CONSTRAINT fk_viaje_ruta
         FOREIGN KEY (IdRuta) REFERENCES ruta(IdRuta),
@@ -148,8 +152,8 @@ CREATE TABLE viajeasiento (
     IdViajeAsiento INT AUTO_INCREMENT PRIMARY KEY,
     IdViaje INT NOT NULL,
     NroAsiento INT NOT NULL,
-    Piso TINYINT NOT NULL,
-    Estado TINYINT NOT NULL DEFAULT 1,
+    Piso INT NOT NULL,
+    Estado INT NOT NULL DEFAULT 1,
     CONSTRAINT fk_viajeasiento_viaje
         FOREIGN KEY (IdViaje) REFERENCES viaje(IdViaje),
     CONSTRAINT uq_viajeasiento UNIQUE (IdViaje, NroAsiento, Piso)
