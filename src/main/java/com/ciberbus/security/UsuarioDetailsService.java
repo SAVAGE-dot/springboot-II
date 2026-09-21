@@ -10,24 +10,27 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.ciberbus.entity.Usuario;
-import com.ciberbus.repository.UsuarioRepository;
+import com.ciberbus.service.UsuarioService;
 
 /**
  * Puente entre Spring Security y la base de datos.
  * El "username" del login es el NroDocumento del usuario.
+ *
+ * NOTA: usa UsuarioService (capa de servicio) en lugar de UsuarioRepository,
+ * respetando la arquitectura del proyecto: controller → service → repository.
  */
 @Service
 public class UsuarioDetailsService implements UserDetailsService {
 
-    private final UsuarioRepository usuarioRepository;
+    private final UsuarioService usuarioService;
 
-    public UsuarioDetailsService(UsuarioRepository usuarioRepository) {
-        this.usuarioRepository = usuarioRepository;
+    public UsuarioDetailsService(UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
     }
 
     @Override
     public UserDetails loadUserByUsername(String nroDocumento) throws UsernameNotFoundException {
-        Usuario u = usuarioRepository.findByNroDocumento(nroDocumento)
+        Usuario u = usuarioService.buscarPorNroDocumento(nroDocumento)
                 .orElseThrow(() -> new UsernameNotFoundException(
                         "Usuario no encontrado: " + nroDocumento));
 
