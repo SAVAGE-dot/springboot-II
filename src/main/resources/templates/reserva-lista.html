@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mis Reservas - CiberBus</title>
+    <style>
+        body { font-family: Segoe UI, Arial, sans-serif; margin: 0; background: #f4f7fa; color: #1a1a1a; }
+        header { background: #1b365d; color: #fff; padding: 20px 32px; display: flex; justify-content: space-between; align-items: center; }
+        header a { color: #c5a46e; text-decoration: none; font-weight: bold; }
+        main { padding: 32px; max-width: 900px; margin: auto; }
+        form { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 24px; display: flex; gap: 16px; align-items: end; }
+        .form-group { display: flex; flex-direction: column; flex-grow: 1; }
+        label { font-weight: 600; margin-bottom: 6px; font-size: 14px; color: #1b365d; }
+        select { padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
+        button { background: #1b365d; color: #fff; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        button:hover { background: #284c82; }
+        table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid #eee; font-size: 14px; }
+        th { background: #1b365d; color: #fff; }
+        .btn-accion { background: #c5a46e; color: #fff; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 13px; font-weight: bold; }
+        .btn-accion:hover { background: #b08f5a; }
+    </style>
+</head>
+<body>
+<header>
+    <h1>CiberBus · Mis Reservas</h1>
+    <div>
+        <a th:href="@{/reserva/buscar}">← Buscar Viajes</a>
+    </div>
+</header>
+<main>
+    <h2>Consultar Reservas por Usuario</h2>
+    
+    <form th:action="@{/reserva/mis-reservas}" method="get">
+        <div class="form-group">
+            <label for="idUsuario">Usuario:</label>
+            <select id="idUsuario" name="idUsuario" required>
+                <option value="">Seleccione usuario</option>
+                <option th:each="u : ${usuarios}" th:value="${u.idUsuario}" th:text="${u.nombre + ' ' + u.apellido + ' (' + u.nroDocumento + ')'}" th:selected="${u.idUsuario == usuarioSeleccionado}"></option>
+            </select>
+        </div>
+        <div>
+            <button type="submit">Ver Reservas</button>
+        </div>
+    </form>
+
+    <div th:if="${reservas != null and !reservas.isEmpty()}">
+        <h3>Historial de Reservas</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Viaje</th>
+                    <th>Fecha Reserva</th>
+                    <th>Total</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="r : ${reservas}">
+                    <td th:text="${r.codigoReserva}"></td>
+                    <td th:text="${r.viaje.codigoViaje + ' (' + r.viaje.ruta.ciudadPartida.ciudad + ' ➔ ' + r.viaje.ruta.ciudadLlegada.ciudad + ')'}"></td>
+                    <td th:text="${r.fechaReserva}"></td>
+                    <td th:text="${'S/ ' + r.montoTotal}"></td>
+                    <td th:text="${r.estado}"></td>
+                    <td>
+                        <a class="btn-accion" th:href="@{/reserva/detalle/{codigo}(codigo=${r.codigoReserva})}">Ver Detalle</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div th:if="${reservas != null and reservas.isEmpty()}">
+        <p>No se encontraron reservas para este usuario.</p>
+    </div>
+</main>
+</body>
+</html>

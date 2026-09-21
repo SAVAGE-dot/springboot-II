@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Seleccionar Asientos - CiberBus</title>
+    <style>
+        body { font-family: Segoe UI, Arial, sans-serif; margin: 0; background: #f4f7fa; color: #1a1a1a; }
+        header { background: #1b365d; color: #fff; padding: 20px 32px; display: flex; justify-content: space-between; align-items: center; }
+        header a { color: #c5a46e; text-decoration: none; font-weight: bold; }
+        main { padding: 32px; max-width: 800px; margin: auto; }
+        .bus-container { background: #fff; padding: 24px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-top: 20px; }
+        .asientos-grid { display: grid; grid-template-columns: repeat(4, 60px); gap: 10px; margin-top: 16px; justify-content: center; }
+        .asiento { padding: 12px; text-align: center; border-radius: 6px; font-weight: bold; font-size: 14px; border: 1px solid #ccc; }
+        .asiento.disponible { background: #e6ffed; border-color: #0a0; color: #0a0; cursor: pointer; }
+        .asiento.ocupado { background: #ffe6e6; border-color: #d00; color: #d00; cursor: not-allowed; }
+        input[type="checkbox"] { display: none; }
+        .asiento-label { display: block; cursor: pointer; }
+        input[type="checkbox"]:checked + .asiento { background: #1b365d; color: #fff; border-color: #1b365d; }
+        button { background: #c5a46e; color: #fff; border: none; padding: 12px 24px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 20px; font-size: 16px; }
+        button:hover { background: #b08f5a; }
+    </style>
+</head>
+<body>
+<header>
+    <h1>CiberBus · Selección de Asientos</h1>
+    <div>
+        <a th:href="@{/reserva/buscar}">← Volver a Búsqueda</a>
+    </div>
+</header>
+<main>
+    <h2>Viaje: <span th:text="${viaje.codigoViaje}"></span></h2>
+    <p>Ruta: <strong th:text="${viaje.ruta.ciudadPartida.ciudad + ' ➔ ' + viaje.ruta.ciudadLlegada.ciudad}"></strong></p>
+    <p>Fecha y Hora: <strong th:text="${viaje.fechaSalida + ' ' + viaje.horaSalida}"></strong> | Tarifa: <strong th:text="${'S/ ' + viaje.tarifa}"></strong></p>
+
+    <form th:action="@{/reserva/checkout}" method="post">
+        <input type="hidden" name="idViaje" th:value="${viaje.idViaje}">
+        
+        <div class="bus-container">
+            <h3>Seleccione sus Asientos</h3>
+            <div class="asientos-grid">
+                <div th:each="a : ${asientos}">
+                    <!-- Si está disponible (Estado == 1) -->
+                    <div th:if="${a.estado == 1}">
+                        <label class="asiento-label">
+                            <input type="checkbox" name="asientosIds" th:value="${a.idViajeAsiento}">
+                            <div class="asiento disponible" th:text="${'A' + a.nroAsiento}"></div>
+                        </label>
+                    </div>
+                    <!-- Si está ocupado (Estado != 1) -->
+                    <div th:if="${a.estado != 1}">
+                        <div class="asiento ocupado" th:text="${'A' + a.nroAsiento}"></div>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 24px;">
+                <button type="submit">Continuar con la Reserva</button>
+            </div>
+        </div>
+    </form>
+</main>
+</body>
+</html>
