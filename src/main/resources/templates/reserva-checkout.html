@@ -43,18 +43,15 @@
         </div>
 
         <div class="card">
-            <h3>Datos del Usuario (Comprador)</h3>
-            <div class="form-group">
-                <label for="idUsuario">Seleccionar Usuario:</label>
-                <select id="idUsuario" name="idUsuario" required>
-                    <option value="">Seleccione usuario</option>
-                    <option th:each="u : ${usuarios}" th:value="${u.idUsuario}" th:text="${u.nombre + ' ' + u.apellido + ' (' + u.nroDocumento + ')'}"></option>
-                </select>
-            </div>
+            <h3>Comprador</h3>
+            <p>
+                <strong th:text="${usuarioActual.nombre + ' ' + usuarioActual.apellido}">Invitado CiberBus</strong>
+                <span th:if="${usuarioActual.nroDocumento == 'GUEST'}" style="color:#777;"> (invitado, sin sesión)</span>
+            </p>
         </div>
 
-        <div class="card">
-            <h3>Datos del Pasajero</h3>
+        <div class="card" th:each="a : ${asientosSeleccionados}">
+            <h3 th:text="${'Pasajero del asiento A' + a.nroAsiento + ' (Piso ' + a.piso + ')'}">Pasajero del asiento</h3>
             <div class="form-group">
                 <label>Tipo de Documento:</label>
                 <select name="tipoDocumento" required>

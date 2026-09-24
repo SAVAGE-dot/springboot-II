@@ -29,20 +29,7 @@
     </div>
 </header>
 <main>
-    <h2>Consultar Reservas por Usuario</h2>
-    
-    <form th:action="@{/reserva/mis-reservas}" method="get">
-        <div class="form-group">
-            <label for="idUsuario">Usuario:</label>
-            <select id="idUsuario" name="idUsuario" required>
-                <option value="">Seleccione usuario</option>
-                <option th:each="u : ${usuarios}" th:value="${u.idUsuario}" th:text="${u.nombre + ' ' + u.apellido + ' (' + u.nroDocumento + ')'}" th:selected="${u.idUsuario == usuarioSeleccionado}"></option>
-            </select>
-        </div>
-        <div>
-            <button type="submit">Ver Reservas</button>
-        </div>
-    </form>
+    <h2 th:text="${'Reservas de ' + usuarioActual.nombre + ' ' + usuarioActual.apellido}">Reservas</h2>
 
     <div th:if="${reservas != null and !reservas.isEmpty()}">
         <h3>Historial de Reservas</h3>

@@ -15,5 +15,5 @@ public interface ReservaService {
 
     List<Reserva> listarPorUsuario(Integer idUsuario);
 
-    Reserva crearReserva(Integer idUsuario, Integer idViaje, List<Integer> idAsientos, Pasajero pasajero, String metodoPago);
+    Reserva crearReserva(Integer idUsuario, Integer idViaje, List<Integer> idAsientos, List<Pasajero> pasajeros, String metodoPago);
 }

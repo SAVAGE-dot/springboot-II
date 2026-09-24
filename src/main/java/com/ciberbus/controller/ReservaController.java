@@ -1,9 +1,12 @@
 package com.ciberbus.controller;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ciberbus.entity.Pasajero;
 import com.ciberbus.entity.Reserva;
+import com.ciberbus.entity.Usuario;
 import com.ciberbus.entity.Viaje;
 import com.ciberbus.entity.ViajeAsiento;
 import com.ciberbus.exception.NegocioException;
@@ -78,6 +82,7 @@ public class ReservaController {
     public String checkoutForm(
             @RequestParam Integer idViaje,
             @RequestParam List<Integer> asientosIds,
+            Authentication authentication,
             Model model) {
         Viaje viaje = viajeService.buscarPorId(idViaje)
                 .orElseThrow(() -> new NegocioException("Viaje no encontrado"));
@@ -87,7 +92,7 @@ public class ReservaController {
 
         model.addAttribute("viaje", viaje);
         model.addAttribute("asientosSeleccionados", asientos);
-        model.addAttribute("usuarios", usuarioService.listar());
+        model.addAttribute("usuarioActual", usuarioActual(authentication));
         return "reserva-checkout";
     }
 
@@ -95,25 +100,31 @@ public class ReservaController {
     public String procesarReserva(
             @RequestParam Integer idViaje,
             @RequestParam List<Integer> asientosIds,
-            @RequestParam Integer idUsuario,
-            @RequestParam String tipoDocumento,
-            @RequestParam String nroDocumento,
-            @RequestParam String nombre,
-            @RequestParam String apellido,
-            @RequestParam String correo,
-            @RequestParam String telefono,
+            @RequestParam List<String> tipoDocumento,
+            @RequestParam List<String> nroDocumento,
+            @RequestParam List<String> nombre,
+            @RequestParam List<String> apellido,
+            @RequestParam(required = false) List<String> correo,
+            @RequestParam(required = false) List<String> telefono,
             @RequestParam String metodoPago,
+            Authentication authentication,
             RedirectAttributes redirectAttributes) {
         try {
-            Pasajero pasajero = new Pasajero();
-            pasajero.setTipoDocumento(tipoDocumento);
-            pasajero.setNroDocumento(nroDocumento);
-            pasajero.setNombre(nombre);
-            pasajero.setApellido(apellido);
-            pasajero.setCorreo(correo);
-            pasajero.setTelefono(telefono);
+            Integer idUsuario = usuarioActual(authentication).getIdUsuario();
 
-            Reserva reserva = reservaService.crearReserva(idUsuario, idViaje, asientosIds, pasajero, metodoPago);
+            List<Pasajero> pasajeros = new ArrayList<>();
+            for (int i = 0; i < asientosIds.size(); i++) {
+                Pasajero pasajero = new Pasajero();
+                pasajero.setTipoDocumento(valor(tipoDocumento, i));
+                pasajero.setNroDocumento(valor(nroDocumento, i));
+                pasajero.setNombre(valor(nombre, i));
+                pasajero.setApellido(valor(apellido, i));
+                pasajero.setCorreo(blankToNull(valor(correo, i)));
+                pasajero.setTelefono(blankToNull(valor(telefono, i)));
+                pasajeros.add(pasajero);
+            }
+
+            Reserva reserva = reservaService.crearReserva(idUsuario, idViaje, asientosIds, pasajeros, metodoPago);
             redirectAttributes.addFlashAttribute("mensaje", "Reserva creada con éxito. Código: " + reserva.getCodigoReserva());
             return "redirect:/reserva/detalle/" + reserva.getCodigoReserva();
         } catch (Exception e) {
@@ -131,14 +142,30 @@ public class ReservaController {
     }
 
     @GetMapping("/mis-reservas")
-    public String misReservas(@RequestParam(required = false) Integer idUsuario, Model model) {
-        model.addAttribute("usuarios", usuarioService.listar());
-        if (idUsuario != null) {
-            model.addAttribute("reservas", reservaService.listarPorUsuario(idUsuario));
-            model.addAttribute("usuarioSeleccionado", idUsuario);
-        } else {
-            model.addAttribute("reservas", List.of());
-        }
+    public String misReservas(Authentication authentication, Model model) {
+        Usuario usuario = usuarioActual(authentication);
+        model.addAttribute("reservas", reservaService.listarPorUsuario(usuario.getIdUsuario()));
+        model.addAttribute("usuarioActual", usuario);
         return "reserva-lista";
+    }
+
+    /**
+     * Usa el usuario autenticado (login por NroDocumento) o el invitado cuando no hay sesión.
+     */
+    private Usuario usuarioActual(Authentication authentication) {
+        if (authentication != null && authentication.isAuthenticated()
+                && !(authentication instanceof AnonymousAuthenticationToken)) {
+            return usuarioService.buscarPorNroDocumento(authentication.getName())
+                    .orElseThrow(() -> new NegocioException("Usuario autenticado no encontrado."));
+        }
+        return usuarioService.obtenerInvitado();
+    }
+
+    private String valor(List<String> lista, int indice) {
+        return (lista != null && indice < lista.size()) ? lista.get(indice) : null;
+    }
+
+    private String blankToNull(String valor) {
+        return (valor == null || valor.isBlank()) ? null : valor;
     }
 }
