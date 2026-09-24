@@ -22,4 +22,6 @@ public interface ViajeService {
     List<Viaje> buscar(Integer idOrigen, Integer idDestino, LocalDate fecha);
 
     List<ViajeAsiento> listarAsientos(Integer idViaje);
+
+    void actualizarAsiento(ViajeAsiento asiento);
 }

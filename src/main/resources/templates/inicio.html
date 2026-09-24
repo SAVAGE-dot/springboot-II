@@ -11,6 +11,11 @@
         main { padding: 32px; max-width: 720px; }
         h2 { color: #1b365d; }
         ul { line-height: 1.7; }
+        nav { display: flex; gap: 12px; flex-wrap: wrap; margin: 20px 0 28px; }
+        nav a { background: #1b365d; color: #fff; text-decoration: none; padding: 10px 18px; border-radius: 4px; font-weight: bold; font-size: 14px; }
+        nav a:hover { background: #284c82; }
+        nav a.alt { background: #c5a46e; }
+        nav a.alt:hover { background: #b08f5a; }
         footer { padding: 16px 32px; color: #5b6570; font-size: 13px; }
     </style>
 </head>
@@ -22,6 +27,13 @@
 <main>
     <h2>El proyecto arrancó</h2>
     <p>Ciudades cargadas en la base: <strong th:text="${totalCiudades}">0</strong></p>
+
+    <nav>
+        <a th:href="@{/reserva/buscar}">Reservar pasajes</a>
+        <a th:href="@{/reserva/mis-reservas}">Mis reservas</a>
+        <a class="alt" th:href="@{/login}">Iniciar sesión</a>
+    </nav>
+
     <p>Arquitectura en capas (MVC + Service + Repository). Cada integrante trabaja en su frente:</p>
     <ul>
         <li><strong>P1 Ernesto Silva</strong> — arquitectura e integración</li>

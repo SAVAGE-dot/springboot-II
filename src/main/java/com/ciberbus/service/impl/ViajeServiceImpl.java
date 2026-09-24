@@ -61,4 +61,9 @@ public class ViajeServiceImpl implements ViajeService {
         }
         return viajeAsientoRepository.findByViaje_IdViajeOrderByPisoAscNroAsientoAsc(idViaje);
     }
+
+    @Override
+    public void actualizarAsiento(ViajeAsiento asiento) {
+        viajeAsientoRepository.save(asiento);
+    }
 }

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Buscar Viajes - CiberBus</title>
+    <style>
+        body { font-family: Segoe UI, Arial, sans-serif; margin: 0; background: #f4f7fa; color: #1a1a1a; }
+        header { background: #1b365d; color: #fff; padding: 20px 32px; display: flex; justify-content: space-between; align-items: center; }
+        header a { color: #c5a46e; text-decoration: none; font-weight: bold; }
+        main { padding: 32px; max-width: 900px; margin: auto; }
+        form { background: #fff; padding: 24px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 24px; display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); align-items: end; }
+        .form-group { display: flex; flex-direction: column; }
+        label { font-weight: 600; margin-bottom: 6px; font-size: 14px; color: #1b365d; }
+        select, input { padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
+        button { background: #1b365d; color: #fff; border: none; padding: 10px 16px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        button:hover { background: #284c82; }
+        table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid #eee; font-size: 14px; }
+        th { background: #1b365d; color: #fff; }
+        .btn-accion { background: #c5a46e; color: #fff; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 13px; font-weight: bold; }
+        .btn-accion:hover { background: #b08f5a; }
+        .alert-error { background: #ffe6e6; color: #d00; padding: 12px; border-radius: 4px; margin-bottom: 16px; }
+        .alert-success { background: #e6ffed; color: #0a0; padding: 12px; border-radius: 4px; margin-bottom: 16px; }
+    </style>
+</head>
+<body>
+<header>
+    <h1>CiberBus · Búsqueda y Reserva</h1>
+    <div>
+        <a th:href="@{/inicio}">Inicio</a> | 
+        <a th:href="@{/reserva/mis-reservas}">Mis Reservas</a>
+    </div>
+</header>
+<main>
+    <h2>Buscar Viaje</h2>
+    
+    <div th:if="${error}" class="alert-error" th:text="${error}"></div>
+    <div th:if="${mensaje}" class="alert-success" th:text="${mensaje}"></div>
+
+    <form th:action="@{/reserva/resultados}" method="get">
+        <div class="form-group">
+            <label for="origen">Origen:</label>
+            <select id="origen" name="origen" required>
+                <option value="">Seleccione origen</option>
+                <option th:each="c : ${ciudades}" th:value="${c.idCiudad}" th:text="${c.ciudad + ' (' + c.departamento + ')'}" th:selected="${c.idCiudad == origenSeleccionado}"></option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="destino">Destino:</label>
+            <select id="destino" name="destino" required>
+                <option value="">Seleccione destino</option>
+                <option th:each="c : ${ciudades}" th:value="${c.idCiudad}" th:text="${c.ciudad + ' (' + c.departamento + ')'}" th:selected="${c.idCiudad == destinoSeleccionado}"></option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="fecha">Fecha Salida:</label>
+            <input type="date" id="fecha" name="fecha" th:value="${fechaSeleccionada}" required>
+        </div>
+        <div class="form-group">
+            <button type="submit">Buscar Viajes</button>
+        </div>
+    </form>
+
+    <div th:if="${viajes != null and !viajes.isEmpty()}">
+        <h3>Viajes Disponibles</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Ruta</th>
+                    <th>Salida</th>
+                    <th>Llegada</th>
+                    <th>Tarifa</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="v : ${viajes}">
+                    <td th:text="${v.codigoViaje}"></td>
+                    <td th:text="${v.ruta.ciudadPartida.ciudad + ' ➔ ' + v.ruta.ciudadLlegada.ciudad}"></td>
+                    <td th:text="${v.fechaSalida + ' ' + v.horaSalida}"></td>
+                    <td th:text="${v.fechaLlegada + ' ' + v.horaLlegada}"></td>
+                    <td th:text="${'S/ ' + v.tarifa}"></td>
+                    <td>
+                        <a class="btn-accion" th:href="@{/reserva/asientos/{id}(id=${v.idViaje})}">Ver Asientos</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div th:if="${viajes != null and viajes.isEmpty()}">
+        <p>No se encontraron viajes para los criterios seleccionados.</p>
+    </div>
+</main>
+</body>
+</html>
