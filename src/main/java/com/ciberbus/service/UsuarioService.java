@@ -8,6 +8,8 @@ import com.ciberbus.entity.Usuario;
 /** P2 — seguridad y usuarios. El controller no habla con el repository. */
 public interface UsuarioService {
 
+    Optional<Usuario> buscarPorId(Integer id);
+
     Optional<Usuario> buscarPorCorreo(String correo);
 
     Optional<Usuario> buscarPorNroDocumento(String nroDocumento);
@@ -18,4 +20,7 @@ public interface UsuarioService {
 
     /** Registra un usuario nuevo encriptando su clave con BCrypt. */
     Usuario registrar(Usuario usuario);
+
+    /** Usuario genérico para compras sin sesión iniciada (invitado). */
+    Usuario obtenerInvitado();
 }

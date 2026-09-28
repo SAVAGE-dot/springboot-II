@@ -2,14 +2,16 @@ package com.ciberbus.repository;
 
 import java.util.List;
 
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.ciberbus.entity.Ciudad;
 import com.ciberbus.entity.Ruta;
 
 public interface RutaRepository extends JpaRepository<Ruta, Integer> {
+
+    List<Ruta> findByEstado(Integer estado);
 
     @Query("""
             select distinct r.ciudadPartida
@@ -22,6 +24,8 @@ public interface RutaRepository extends JpaRepository<Ruta, Integer> {
     @Query("""
             select r
             from Ruta r
+            join fetch r.ciudadPartida
+            join fetch r.ciudadLlegada
             where r.ciudadPartida.idCiudad = :idOrigen
               and r.estado = :estado
             order by r.ciudadLlegada.ciudad

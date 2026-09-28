@@ -6,25 +6,40 @@
     <title th:text="${titulo}">CiberBus</title>
     <style>
         body { font-family: Segoe UI, Arial, sans-serif; margin: 0; background: #f4f7fa; color: #1a1a1a; }
-        header { background: #1b365d; color: #fff; padding: 28px 32px; }
+        header { background: #1b365d; color: #fff; padding: 20px 32px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+        header h1 { margin: 0; }
         header p { margin: 6px 0 0; color: #c5a46e; }
+        header nav { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        header nav a, header nav button { color: #fff; text-decoration: none; background: transparent; border: 1px solid #c5a46e; padding: 8px 14px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+        header nav a:hover, header nav button:hover { background: #c5a46e; color: #1b365d; }
         main { padding: 32px; max-width: 720px; }
         h2 { color: #1b365d; }
         label { display: block; font-weight: 600; margin-top: 16px; }
-        select, input, button { box-sizing: border-box; font: inherit; padding: 10px; width: 100%; }
-        button { background: #c5a46e; border: 0; color: #172d4d; cursor: pointer; font-weight: 700; margin-top: 20px; }
+        select, input, button.buscar { box-sizing: border-box; font: inherit; padding: 10px; width: 100%; }
+        button.buscar { background: #c5a46e; border: 0; color: #172d4d; cursor: pointer; font-weight: 700; margin-top: 20px; }
         .note { color: #5b6570; font-size: 14px; }
+        ul { line-height: 1.7; }
         footer { padding: 16px 32px; color: #5b6570; font-size: 13px; }
     </style>
 </head>
 <body>
 <header>
-    <h1>CiberBus</h1>
-    <p>Curso 5484 · Lenguaje de Programación II · Spring Boot</p>
+    <div>
+        <h1>CiberBus</h1>
+        <p>Curso 5484 · Lenguaje de Programación II · Spring Boot</p>
+    </div>
+    <nav>
+        <a th:href="@{/reserva/mis-reservas}">Mis reservas</a>
+        <a th:if="${usuario == null}" th:href="@{/login}">Iniciar sesión</a>
+        <span th:if="${usuario != null}" th:text="${usuario.nombre + ' ' + usuario.apellido + ' · ' + usuario.rol}">Usuario</span>
+        <form th:if="${usuario != null}" th:action="@{/logout}" method="post" style="margin:0;">
+            <button type="submit">Cerrar sesión</button>
+        </form>
+    </nav>
 </header>
 <main>
     <h2>Busca tu próximo viaje</h2>
-    <p class="note">Prueba inicial de P4: origen y destinos disponibles según las rutas registradas.</p>
+    <p class="note">Elige origen, destino y fecha. Luego seleccionas hasta 5 asientos y pasas a reservar.</p>
 
     <form method="get" th:action="@{/viajes/buscar}">
         <label for="origenId">Origen</label>
@@ -47,7 +62,7 @@
         <label for="fecha">Fecha de viaje</label>
         <input id="fecha" name="fecha" type="date" required>
 
-        <button type="submit" th:disabled="${#lists.isEmpty(destinos)}">Buscar viajes</button>
+        <button class="buscar" type="submit" th:disabled="${#lists.isEmpty(destinos)}">Buscar viajes</button>
     </form>
 
     <p class="note">Ciudades cargadas en la base: <strong th:text="${totalCiudades}">0</strong></p>

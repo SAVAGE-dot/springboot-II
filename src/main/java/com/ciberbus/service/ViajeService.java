@@ -34,4 +34,6 @@ public interface ViajeService {
     List<ViajeAsiento> listarAsientos(Integer idViaje);
 
     List<ViajeAsiento> validarAsientosSeleccionados(Integer idViaje, List<Integer> idsAsiento);
+
+    void actualizarAsiento(ViajeAsiento asiento);
 }

@@ -127,4 +127,9 @@ public class ViajeServiceImpl implements ViajeService {
             return asiento;
         }).toList();
     }
+
+    @Override
+    public void actualizarAsiento(ViajeAsiento asiento) {
+        viajeAsientoRepository.save(asiento);
+    }
 }

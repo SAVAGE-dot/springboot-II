@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Checkout y Pago - CiberBus</title>
+    <style>
+        body { font-family: Segoe UI, Arial, sans-serif; margin: 0; background: #f4f7fa; color: #1a1a1a; }
+        header { background: #1b365d; color: #fff; padding: 20px 32px; display: flex; justify-content: space-between; align-items: center; }
+        header a { color: #c5a46e; text-decoration: none; font-weight: bold; }
+        main { padding: 32px; max-width: 800px; margin: auto; }
+        .card { background: #fff; padding: 24px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .form-group { display: flex; flex-direction: column; margin-bottom: 12px; }
+        label { font-weight: 600; margin-bottom: 4px; font-size: 14px; color: #1b365d; }
+        input, select { padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
+        button { background: #1b365d; color: #fff; border: none; padding: 12px 24px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 16px; width: 100%; }
+        button:hover { background: #284c82; }
+    </style>
+</head>
+<body>
+<header>
+    <h1>CiberBus · Confirmación de Reserva</h1>
+    <div>
+        <a th:href="@{/reserva/buscar}">← Cancelar</a>
+    </div>
+</header>
+<main>
+    <form th:action="@{/reserva/procesar}" method="post">
+        <input type="hidden" name="idViaje" th:value="${viaje.idViaje}">
+        <div th:each="a : ${asientosSeleccionados}">
+            <input type="hidden" name="asientosIds" th:value="${a.idViajeAsiento}">
+        </div>
+
+        <div class="card">
+            <h3>Resumen del Viaje</h3>
+            <p>Ruta: <strong th:text="${viaje.ruta.ciudadPartida.ciudad + ' ➔ ' + viaje.ruta.ciudadLlegada.ciudad}"></strong></p>
+            <p>Fecha y Hora: <strong th:text="${viaje.fechaSalida + ' ' + viaje.horaSalida}"></strong></p>
+            <p>Asientos seleccionados: 
+                <span th:each="a, iterStat : ${asientosSeleccionados}">
+                    <span th:text="${'A' + a.nroAsiento + (!iterStat.last ? ', ' : '')}"></span>
+                </span>
+            </p>
+            <p>Monto Total: <strong th:text="${'S/ ' + (viaje.tarifa * asientosSeleccionados.size())}"></strong></p>
+        </div>
+
+        <div class="card">
+            <h3>Comprador</h3>
+            <p>
+                <strong th:text="${usuarioActual.nombre + ' ' + usuarioActual.apellido}">Invitado CiberBus</strong>
+                <span th:if="${usuarioActual.nroDocumento == 'GUEST'}" style="color:#777;"> (invitado, sin sesión)</span>
+            </p>
+        </div>
+
+        <div class="card" th:each="a : ${asientosSeleccionados}">
+            <h3 th:text="${'Pasajero del asiento A' + a.nroAsiento + ' (Piso ' + a.piso + ')'}">Pasajero del asiento</h3>
+            <div class="form-group">
+                <label>Tipo de Documento:</label>
+                <select name="tipoDocumento" required>
+                    <option value="DNI">DNI</option>
+                    <option value="Pasaporte">Pasaporte</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Nro Documento:</label>
+                <input type="text" name="nroDocumento" required>
+            </div>
+            <div class="form-group">
+                <label>Nombre:</label>
+                <input type="text" name="nombre" required>
+            </div>
+            <div class="form-group">
+                <label>Apellido:</label>
+                <input type="text" name="apellido" required>
+            </div>
+            <div class="form-group">
+                <label>Correo:</label>
+                <input type="email" name="correo">
+            </div>
+            <div class="form-group">
+                <label>Teléfono:</label>
+                <input type="text" name="telefono">
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Método de Pago (Simulado)</h3>
+            <div class="form-group">
+                <label>Método:</label>
+                <select name="metodoPago" required>
+                    <option value="TARJETA_CREDITO">Tarjeta de Crédito / Débito</option>
+                    <option value="YAPE_PLIN">Yape / Plin</option>
+                    <option value="EFECTIVO">Efectivo en counter</option>
+                </select>
+            </div>
+            <button type="submit">Confirmar y Pagar</button>
+        </div>
+    </form>
+</main>
+</body>
+</html>

@@ -16,6 +16,8 @@ import com.ciberbus.service.UsuarioService;
 @Transactional
 public class UsuarioServiceImpl implements UsuarioService {
 
+    private static final String INVITADO_NRO_DOCUMENTO = "GUEST";
+
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -23,6 +25,12 @@ public class UsuarioServiceImpl implements UsuarioService {
                               PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<Usuario> buscarPorId(Integer id) {
+        return usuarioRepository.findById(id);
     }
 
     @Override
@@ -57,5 +65,20 @@ public class UsuarioServiceImpl implements UsuarioService {
         // Encriptar la clave antes de guardar
         usuario.setClave(passwordEncoder.encode(usuario.getClave()));
         return usuarioRepository.save(usuario);
+    }
+
+    @Override
+    public Usuario obtenerInvitado() {
+        return usuarioRepository.findByNroDocumento(INVITADO_NRO_DOCUMENTO)
+                .orElseGet(() -> {
+                    Usuario invitado = new Usuario();
+                    invitado.setTipoDocumento("DNI");
+                    invitado.setNroDocumento(INVITADO_NRO_DOCUMENTO);
+                    invitado.setNombre("Invitado");
+                    invitado.setApellido("CiberBus");
+                    invitado.setRol("CLIENTE");
+                    invitado.setEstado(1);
+                    return usuarioRepository.save(invitado);
+                });
     }
 }
