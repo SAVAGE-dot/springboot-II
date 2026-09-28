@@ -45,7 +45,9 @@ public class SecurityConfig {
                         // Rutas públicas
                         .requestMatchers("/", "/inicio", "/login", "/error",
                                          "/css/**", "/js/**", "/images/**").permitAll()
-                        // Reserva abierta: permite buscar y reservar como invitado (P5)
+                        // P4: buscar viajes y elegir asientos como invitado
+                        .requestMatchers("/viajes/**").permitAll()
+                        // P5: reservar y consultar como invitado
                         .requestMatchers("/reserva/**").permitAll()
                         // Solo ADMIN
                         .requestMatchers("/admin/**").hasRole("ADMIN")
