@@ -13,6 +13,10 @@ public interface RutaRepository extends JpaRepository<Ruta, Integer> {
 
     List<Ruta> findByEstado(Integer estado);
 
+    long countByCiudadPartida_IdCiudadAndEstado(Integer idCiudad, Integer estado);
+
+    long countByCiudadLlegada_IdCiudadAndEstado(Integer idCiudad, Integer estado);
+
     @Query("""
             select distinct r.ciudadPartida
             from Ruta r

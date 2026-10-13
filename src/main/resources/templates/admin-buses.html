@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Maestros · Buses · CiberBus</title>
+    <style>
+        body { font-family: Segoe UI, Arial, sans-serif; margin: 0; background: #f4f7fa; color: #1a1a1a; }
+        header { background: #1b365d; color: #fff; padding: 20px 32px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+        header h1 { margin: 0; }
+        header p { margin: 6px 0 0; color: #c5a46e; }
+        nav { display: flex; flex-wrap: wrap; gap: 8px; }
+        nav a { color: #fff; text-decoration: none; border: 1px solid #c5a46e; padding: 8px 14px; border-radius: 4px; font-size: 14px; }
+        nav a:hover { background: #c5a46e; color: #1b365d; }
+        main { padding: 32px; max-width: 1100px; margin: 0 auto; }
+        h2 { color: #1b365d; }
+        .panel { background: #fff; border: 1px solid #dbe2ea; border-radius: 8px; padding: 20px; margin-bottom: 24px; }
+        .fila { display: flex; gap: 16px; flex-wrap: wrap; }
+        .campo { flex: 1; min-width: 180px; }
+        label { display: block; font-weight: 600; margin-top: 14px; }
+        input, select { box-sizing: border-box; font: inherit; padding: 10px; width: 100%; }
+        .acciones { display: flex; gap: 8px; margin-top: 18px; align-items: center; }
+        .btn { font: inherit; padding: 10px 16px; border: 0; border-radius: 4px; cursor: pointer; font-weight: 700; background: #c5a46e; color: #172d4d; text-decoration: none; }
+        .btn.gris { background: #e8ecf1; color: #1b365d; border: 1px solid #c7d0da; font-weight: 600; }
+        .btn.rojo { background: #c0392b; color: #fff; font-size: 13px; padding: 7px 12px; }
+        table { width: 100%; border-collapse: collapse; background: #fff; }
+        th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid #dbe2ea; font-size: 14px; }
+        th { background: #1b365d; color: #fff; }
+        .ok { background: #d9f2e6; border: 1px solid #96d6b4; border-radius: 8px; padding: 14px; margin-bottom: 18px; }
+        .error { background: #fde8e8; border: 1px solid #f3b4b4; border-radius: 8px; padding: 14px; margin-bottom: 18px; }
+        .filtros a { color: #1b365d; margin-right: 10px; }
+        .inactivo { color: #a33; font-weight: 600; }
+        .acciones-inline { display: flex; gap: 8px; align-items: center; }
+    </style>
+</head>
+<body>
+<header>
+    <div>
+        <h1>Maestros · Buses</h1>
+        <p>Panel de administración · P3</p>
+    </div>
+    <nav>
+        <a th:href="@{/}">Inicio</a>
+        <a th:href="@{/admin/ciudades}">Ciudades</a>
+        <a th:href="@{/admin/turnos}">Turnos</a>
+        <a th:href="@{/admin/buses}">Buses</a>
+        <a th:href="@{/admin/conductores}">Conductores</a>
+        <a th:href="@{/admin/rutas}">Rutas</a>
+    </nav>
+</header>
+<main>
+    <div class="ok" th:if="${ok}" th:text="${ok}"></div>
+    <div class="error" th:if="${error}" th:text="${error}"></div>
+
+    <section class="panel">
+        <h2 th:text="${tituloForm}">Nuevo bus</h2>
+        <form th:action="@{/admin/buses}" method="post">
+            <input type="hidden" name="id" th:value="${entidad.idBus}">
+            <input type="hidden" name="estado" th:if="${estado != null}" th:value="${estado}">
+            <div class="fila">
+                <div class="campo">
+                    <label for="nroPlaca">Placa</label>
+                    <input id="nroPlaca" name="nroPlaca" required maxlength="15" th:value="${entidad.nroPlaca}" placeholder="ABC-123">
+                </div>
+                <div class="campo">
+                    <label for="marca">Marca</label>
+                    <input id="marca" name="marca" required maxlength="50" th:value="${entidad.marca}" placeholder="Mercedes">
+                </div>
+                <div class="campo">
+                    <label for="tipoBus">Tipo de bus</label>
+                    <input id="tipoBus" name="tipoBus" required maxlength="50" th:value="${entidad.tipoBus}" placeholder="Ordinario">
+                </div>
+            </div>
+            <div class="fila">
+                <div class="campo">
+                    <label for="cantidadPisos">Cantidad de pisos</label>
+                    <input id="cantidadPisos" name="cantidadPisos" type="number" min="1" max="3" required
+                           th:value="${entidad.cantidadPisos}">
+                </div>
+                <div class="campo">
+                    <label for="nroAsientos">Cantidad de asientos</label>
+                    <input id="nroAsientos" name="nroAsientos" type="number" min="1" max="100" required
+                           th:value="${entidad.nroAsientos}">
+                </div>
+            </div>
+            <div class="acciones">
+                <button class="btn" type="submit">Guardar</button>
+                <a class="btn gris" th:if="${entidad.idBus != null}" th:href="@{/admin/buses}">Cancelar</a>
+            </div>
+        </form>
+    </section>
+
+    <section>
+        <h2>Listado de buses</h2>
+        <p class="filtros">
+            Ver:
+            <a th:href="@{/admin/buses}">Todos</a>
+            <a th:href="@{/admin/buses(estado=1)}">Activos</a>
+            <a th:href="@{/admin/buses(estado=0)}">Inactivos</a>
+        </p>
+        <div class="error" th:if="${#lists.isEmpty(buses)}">No hay buses para este filtro.</div>
+        <table th:unless="${#lists.isEmpty(buses)}">
+            <thead>
+                <tr><th>#</th><th>Placa</th><th>Marca</th><th>Tipo</th><th>Pisos</th><th>Asientos</th><th>Estado</th><th>Acciones</th></tr>
+            </thead>
+            <tbody>
+                <tr th:each="b : ${buses}">
+                    <td th:text="${b.idBus}">1</td>
+                    <td th:text="${b.nroPlaca}">ABC-123</td>
+                    <td th:text="${b.marca}">Marca</td>
+                    <td th:text="${b.tipoBus}">Tipo</td>
+                    <td th:text="${b.cantidadPisos}">1</td>
+                    <td th:text="${b.nroAsientos}">40</td>
+                    <td th:class="${b.estado == 1} ? '' : 'inactivo'"
+                        th:text="${b.estado == 1} ? 'Activo' : 'Inactivo'">Activo</td>
+                    <td>
+                        <div class="acciones-inline">
+                            <a class="btn gris" th:href="@{/admin/buses/{id}(id=${b.idBus}, estado=${estado})}">Editar</a>
+                            <form th:if="${b.estado == 1}" class="acciones-inline"
+                                  th:action="@{/admin/buses/{id}/eliminar(id=${b.idBus})}" method="post">
+                                <input type="hidden" name="estado" th:if="${estado != null}" th:value="${estado}">
+                                <button class="btn rojo" type="submit"
+                                        onclick="return confirm('¿Dar de baja este bus?')">Dar de baja</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+</body>
+</html>

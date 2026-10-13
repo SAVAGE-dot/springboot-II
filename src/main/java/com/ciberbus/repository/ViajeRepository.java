@@ -25,6 +25,12 @@ public interface ViajeRepository extends JpaRepository<Viaje, Integer> {
     List<Viaje> findByRuta_CiudadPartida_IdCiudadAndRuta_CiudadLlegada_IdCiudadAndFechaSalida(
             Integer idOrigen, Integer idDestino, LocalDate fechaSalida);
 
+    long countByRuta_IdRutaAndEstado(Integer idRuta, Integer estado);
+
+    long countByBus_IdBusAndEstado(Integer idBus, Integer estado);
+
+    long countByConductor_IdConductorAndEstado(Integer idConductor, Integer estado);
+
     @Query("""
             select v
             from Viaje v

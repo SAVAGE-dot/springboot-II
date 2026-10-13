@@ -15,5 +15,11 @@ public interface ConductorRepository extends JpaRepository<Conductor, Integer> {
 
     boolean existsByNroDocumento(String nroDocumento);
 
+    boolean existsByNroDocumentoAndIdConductorNot(String nroDocumento, Integer idConductor);
+
     boolean existsByCorreo(String correo);
+
+    boolean existsByCorreoAndIdConductorNot(String correo, Integer idConductor);
+
+    long countByTurno_IdTurnoAndEstado(Integer idTurno, Integer estado);
 }

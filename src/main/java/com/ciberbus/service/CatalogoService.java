@@ -20,6 +20,8 @@ public interface CatalogoService {
 
     List<Turno> listarTurnos();
 
+    Optional<Turno> buscarTurno(Integer id);
+
     Turno guardarTurno(Turno turno);
 
     List<Bus> listarBuses();
@@ -39,4 +41,28 @@ public interface CatalogoService {
     Optional<Ruta> buscarRuta(Integer id);
 
     Ruta guardarRuta(Ruta ruta);
+
+    // P3 — consulta filtrada por estado: null = todos, 1 = activos, 0 = inactivos
+
+    List<Ciudad> listarCiudadesPorEstado(Integer estado);
+
+    List<Turno> listarTurnosPorEstado(Integer estado);
+
+    List<Bus> listarBusesPorEstado(Integer estado);
+
+    List<Conductor> listarConductoresPorEstado(Integer estado);
+
+    List<Ruta> listarRutasPorEstado(Integer estado);
+
+    // P3 — baja lógica (estado = 0) con bloqueo si el maestro está referenciado
+
+    void eliminarCiudad(Integer id);
+
+    void eliminarTurno(Integer id);
+
+    void eliminarBus(Integer id);
+
+    void eliminarConductor(Integer id);
+
+    void eliminarRuta(Integer id);
 }

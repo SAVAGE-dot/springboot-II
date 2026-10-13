@@ -11,4 +11,6 @@ public interface BusRepository extends JpaRepository<Bus, Integer> {
     List<Bus> findByEstado(Integer estado);
 
     boolean existsByNroPlaca(String nroPlaca);
+
+    boolean existsByNroPlacaAndIdBusNot(String nroPlaca, Integer idBus);
 }

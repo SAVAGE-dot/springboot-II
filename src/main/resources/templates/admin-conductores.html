@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Maestros · Conductores · CiberBus</title>
+    <style>
+        body { font-family: Segoe UI, Arial, sans-serif; margin: 0; background: #f4f7fa; color: #1a1a1a; }
+        header { background: #1b365d; color: #fff; padding: 20px 32px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+        header h1 { margin: 0; }
+        header p { margin: 6px 0 0; color: #c5a46e; }
+        nav { display: flex; flex-wrap: wrap; gap: 8px; }
+        nav a { color: #fff; text-decoration: none; border: 1px solid #c5a46e; padding: 8px 14px; border-radius: 4px; font-size: 14px; }
+        nav a:hover { background: #c5a46e; color: #1b365d; }
+        main { padding: 32px; max-width: 1100px; margin: 0 auto; }
+        h2 { color: #1b365d; }
+        .panel { background: #fff; border: 1px solid #dbe2ea; border-radius: 8px; padding: 20px; margin-bottom: 24px; }
+        .fila { display: flex; gap: 16px; flex-wrap: wrap; }
+        .campo { flex: 1; min-width: 180px; }
+        label { display: block; font-weight: 600; margin-top: 14px; }
+        input, select { box-sizing: border-box; font: inherit; padding: 10px; width: 100%; }
+        .acciones { display: flex; gap: 8px; margin-top: 18px; align-items: center; }
+        .btn { font: inherit; padding: 10px 16px; border: 0; border-radius: 4px; cursor: pointer; font-weight: 700; background: #c5a46e; color: #172d4d; text-decoration: none; }
+        .btn.gris { background: #e8ecf1; color: #1b365d; border: 1px solid #c7d0da; font-weight: 600; }
+        .btn.rojo { background: #c0392b; color: #fff; font-size: 13px; padding: 7px 12px; }
+        table { width: 100%; border-collapse: collapse; background: #fff; }
+        th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid #dbe2ea; font-size: 14px; }
+        th { background: #1b365d; color: #fff; }
+        .ok { background: #d9f2e6; border: 1px solid #96d6b4; border-radius: 8px; padding: 14px; margin-bottom: 18px; }
+        .error { background: #fde8e8; border: 1px solid #f3b4b4; border-radius: 8px; padding: 14px; margin-bottom: 18px; }
+        .filtros a { color: #1b365d; margin-right: 10px; }
+        .inactivo { color: #a33; font-weight: 600; }
+        .acciones-inline { display: flex; gap: 8px; align-items: center; }
+    </style>
+</head>
+<body>
+<header>
+    <div>
+        <h1>Maestros · Conductores</h1>
+        <p>Panel de administración · P3</p>
+    </div>
+    <nav>
+        <a th:href="@{/}">Inicio</a>
+        <a th:href="@{/admin/ciudades}">Ciudades</a>
+        <a th:href="@{/admin/turnos}">Turnos</a>
+        <a th:href="@{/admin/buses}">Buses</a>
+        <a th:href="@{/admin/conductores}">Conductores</a>
+        <a th:href="@{/admin/rutas}">Rutas</a>
+    </nav>
+</header>
+<main>
+    <div class="ok" th:if="${ok}" th:text="${ok}"></div>
+    <div class="error" th:if="${error}" th:text="${error}"></div>
+
+    <section class="panel">
+        <h2 th:text="${tituloForm}">Nuevo conductor</h2>
+        <form th:action="@{/admin/conductores}" method="post">
+            <input type="hidden" name="id" th:value="${entidad.idConductor}">
+            <input type="hidden" name="estado" th:if="${estado != null}" th:value="${estado}">
+            <div class="fila">
+                <div class="campo">
+                    <label for="tipoDocumento">Tipo de documento</label>
+                    <input id="tipoDocumento" name="tipoDocumento" required maxlength="20"
+                           th:value="${entidad.tipoDocumento}" placeholder="DNI">
+                </div>
+                <div class="campo">
+                    <label for="nroDocumento">Nro. de documento</label>
+                    <input id="nroDocumento" name="nroDocumento" required maxlength="20"
+                           th:value="${entidad.nroDocumento}" placeholder="72000001">
+                </div>
+            </div>
+            <div class="fila">
+                <div class="campo">
+                    <label for="nombre">Nombre</label>
+                    <input id="nombre" name="nombre" required maxlength="100" th:value="${entidad.nombre}">
+                </div>
+                <div class="campo">
+                    <label for="apellido">Apellido</label>
+                    <input id="apellido" name="apellido" required maxlength="100" th:value="${entidad.apellido}">
+                </div>
+            </div>
+            <div class="fila">
+                <div class="campo">
+                    <label for="correo">Correo (opcional)</label>
+                    <input id="correo" name="correo" type="email" maxlength="150" th:value="${entidad.correo}">
+                </div>
+                <div class="campo">
+                    <label for="telefono">Teléfono (opcional)</label>
+                    <input id="telefono" name="telefono" maxlength="20" th:value="${entidad.telefono}">
+                </div>
+            </div>
+            <div class="fila">
+                <div class="campo">
+                    <label for="categoriaLicencia">Categoría de licencia</label>
+                    <input id="categoriaLicencia" name="categoriaLicencia" required maxlength="20"
+                           th:value="${entidad.categoriaLicencia}" placeholder="A-IIIc">
+                </div>
+                <div class="campo">
+                    <label for="vencimientoLicencia">Vencimiento de licencia</label>
+                    <input id="vencimientoLicencia" name="vencimientoLicencia" type="date" required
+                           th:value="${entidad.vencimientoLicencia}">
+                </div>
+            </div>
+            <div class="fila">
+                <div class="campo">
+                    <label for="idTurno">Turno</label>
+                    <select id="idTurno" name="idTurno" required>
+                        <option value="">Seleccione un turno</option>
+                        <option th:each="t : ${turnos}" th:value="${t.idTurno}"
+                                th:text="|${t.nombre} · ${t.horaInicio} a ${t.horaFin}|"
+                                th:selected="${entidad.turno != null and entidad.turno.idTurno == t.idTurno}">Turno</option>
+                    </select>
+                </div>
+                <div class="campo">
+                    <label for="diaDescanso">Día de descanso (opcional)</label>
+                    <input id="diaDescanso" name="diaDescanso" maxlength="20"
+                           th:value="${entidad.diaDescanso}" placeholder="Domingo">
+                </div>
+            </div>
+            <div class="acciones">
+                <button class="btn" type="submit">Guardar</button>
+                <a class="btn gris" th:if="${entidad.idConductor != null}" th:href="@{/admin/conductores}">Cancelar</a>
+            </div>
+        </form>
+    </section>
+
+    <section>
+        <h2>Listado de conductores</h2>
+        <p class="filtros">
+            Ver:
+            <a th:href="@{/admin/conductores}">Todos</a>
+            <a th:href="@{/admin/conductores(estado=1)}">Activos</a>
+            <a th:href="@{/admin/conductores(estado=0)}">Inactivos</a>
+        </p>
+        <div class="error" th:if="${#lists.isEmpty(conductores)}">No hay conductores para este filtro.</div>
+        <table th:unless="${#lists.isEmpty(conductores)}">
+            <thead>
+                <tr><th>#</th><th>Documento</th><th>Nombre</th><th>Correo</th><th>Turno</th><th>Licencia</th><th>Estado</th><th>Acciones</th></tr>
+            </thead>
+            <tbody>
+                <tr th:each="c : ${conductores}">
+                    <td th:text="${c.idConductor}">1</td>
+                    <td th:text="|${c.tipoDocumento} ${c.nroDocumento}|">DNI 00000000</td>
+                    <td th:text="|${c.nombre} ${c.apellido}|">Nombre</td>
+                    <td th:text="${c.correo}">correo</td>
+                    <td th:text="${c.turno != null ? c.turno.nombre : '-'}">Turno</td>
+                    <td th:text="|${c.categoriaLicencia} · hasta ${c.vencimientoLicencia}|">A-IIIc</td>
+                    <td th:class="${c.estado == 1} ? '' : 'inactivo'"
+                        th:text="${c.estado == 1} ? 'Activo' : 'Inactivo'">Activo</td>
+                    <td>
+                        <div class="acciones-inline">
+                            <a class="btn gris" th:href="@{/admin/conductores/{id}(id=${c.idConductor}, estado=${estado})}">Editar</a>
+                            <form th:if="${c.estado == 1}" class="acciones-inline"
+                                  th:action="@{/admin/conductores/{id}/eliminar(id=${c.idConductor})}" method="post">
+                                <input type="hidden" name="estado" th:if="${estado != null}" th:value="${estado}">
+                                <button class="btn rojo" type="submit"
+                                        onclick="return confirm('¿Dar de baja este conductor?')">Dar de baja</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+</body>
+</html>
