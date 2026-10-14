@@ -29,6 +29,7 @@
         <p>Curso 5484 · Lenguaje de Programación II · Spring Boot</p>
     </div>
     <nav>
+        <a th:if="${usuario != null and usuario.rol == 'ADMIN'}" th:href="@{/admin/ciudades}">Panel de administración</a>
         <a th:href="@{/reserva/mis-reservas}">Mis reservas</a>
         <a th:if="${usuario == null}" th:href="@{/login}">Iniciar sesión</a>
         <span th:if="${usuario != null}" th:text="${usuario.nombre + ' ' + usuario.apellido + ' · ' + usuario.rol}">Usuario</span>

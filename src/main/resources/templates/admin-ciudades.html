@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Maestros · Ciudades · CiberBus</title>
+    <style>
+        body { font-family: Segoe UI, Arial, sans-serif; margin: 0; background: #f4f7fa; color: #1a1a1a; }
+        header { background: #1b365d; color: #fff; padding: 20px 32px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+        header h1 { margin: 0; }
+        header p { margin: 6px 0 0; color: #c5a46e; }
+        nav { display: flex; flex-wrap: wrap; gap: 8px; }
+        nav a { color: #fff; text-decoration: none; border: 1px solid #c5a46e; padding: 8px 14px; border-radius: 4px; font-size: 14px; }
+        nav a:hover { background: #c5a46e; color: #1b365d; }
+        main { padding: 32px; max-width: 1100px; margin: 0 auto; }
+        h2 { color: #1b365d; }
+        .panel { background: #fff; border: 1px solid #dbe2ea; border-radius: 8px; padding: 20px; margin-bottom: 24px; }
+        label { display: block; font-weight: 600; margin-top: 14px; }
+        input, select { box-sizing: border-box; font: inherit; padding: 10px; width: 100%; }
+        .acciones { display: flex; gap: 8px; margin-top: 18px; align-items: center; }
+        .btn { font: inherit; padding: 10px 16px; border: 0; border-radius: 4px; cursor: pointer; font-weight: 700; background: #c5a46e; color: #172d4d; text-decoration: none; }
+        .btn.gris { background: #e8ecf1; color: #1b365d; border: 1px solid #c7d0da; font-weight: 600; }
+        .btn.rojo { background: #c0392b; color: #fff; font-size: 13px; padding: 7px 12px; }
+        table { width: 100%; border-collapse: collapse; background: #fff; }
+        th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid #dbe2ea; font-size: 14px; }
+        th { background: #1b365d; color: #fff; }
+        .ok { background: #d9f2e6; border: 1px solid #96d6b4; border-radius: 8px; padding: 14px; margin-bottom: 18px; }
+        .error { background: #fde8e8; border: 1px solid #f3b4b4; border-radius: 8px; padding: 14px; margin-bottom: 18px; }
+        .filtros a { color: #1b365d; margin-right: 10px; }
+        .inactivo { color: #a33; font-weight: 600; }
+        .acciones-inline { display: flex; gap: 8px; align-items: center; }
+    </style>
+</head>
+<body>
+<header>
+    <div>
+        <h1>Maestros · Ciudades</h1>
+        <p>Panel de administración · P3</p>
+    </div>
+    <nav>
+        <a th:href="@{/}">Inicio</a>
+        <a th:href="@{/admin/ciudades}">Ciudades</a>
+        <a th:href="@{/admin/turnos}">Turnos</a>
+        <a th:href="@{/admin/buses}">Buses</a>
+        <a th:href="@{/admin/conductores}">Conductores</a>
+        <a th:href="@{/admin/rutas}">Rutas</a>
+    </nav>
+</header>
+<main>
+    <div class="ok" th:if="${ok}" th:text="${ok}"></div>
+    <div class="error" th:if="${error}" th:text="${error}"></div>
+
+    <section class="panel">
+        <h2 th:text="${tituloForm}">Nueva ciudad</h2>
+        <form th:action="@{/admin/ciudades}" method="post">
+            <input type="hidden" name="id" th:value="${entidad.idCiudad}">
+            <input type="hidden" name="estado" th:if="${estado != null}" th:value="${estado}">
+            <label for="ciudad">Ciudad</label>
+            <input id="ciudad" name="ciudad" required maxlength="100" th:value="${entidad.ciudad}">
+            <label for="departamento">Departamento</label>
+            <input id="departamento" name="departamento" required maxlength="100" th:value="${entidad.departamento}">
+            <div class="acciones">
+                <button class="btn" type="submit">Guardar</button>
+                <a class="btn gris" th:if="${entidad.idCiudad != null}" th:href="@{/admin/ciudades}">Cancelar</a>
+            </div>
+        </form>
+    </section>
+
+    <section>
+        <h2>Listado de ciudades</h2>
+        <p class="filtros">
+            Ver:
+            <a th:href="@{/admin/ciudades}">Todas</a>
+            <a th:href="@{/admin/ciudades(estado=1)}">Activas</a>
+            <a th:href="@{/admin/ciudades(estado=0)}">Inactivas</a>
+        </p>
+        <div class="error" th:if="${#lists.isEmpty(ciudades)}">No hay ciudades para este filtro.</div>
+        <table th:unless="${#lists.isEmpty(ciudades)}">
+            <thead>
+                <tr><th>#</th><th>Ciudad</th><th>Departamento</th><th>Estado</th><th>Acciones</th></tr>
+            </thead>
+            <tbody>
+                <tr th:each="c : ${ciudades}">
+                    <td th:text="${c.idCiudad}">1</td>
+                    <td th:text="${c.ciudad}">Ciudad</td>
+                    <td th:text="${c.departamento}">Departamento</td>
+                    <td th:class="${c.estado == 1} ? '' : 'inactivo'"
+                        th:text="${c.estado == 1} ? 'Activo' : 'Inactivo'">Activo</td>
+                    <td>
+                        <div class="acciones-inline">
+                            <a class="btn gris" th:href="@{/admin/ciudades/{id}(id=${c.idCiudad}, estado=${estado})}">Editar</a>
+                            <form th:if="${c.estado == 1}" class="acciones-inline"
+                                  th:action="@{/admin/ciudades/{id}/eliminar(id=${c.idCiudad})}" method="post">
+                                <input type="hidden" name="estado" th:if="${estado != null}" th:value="${estado}">
+                                <button class="btn rojo" type="submit"
+                                        onclick="return confirm('¿Dar de baja esta ciudad?')">Dar de baja</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+</body>
+</html>
