@@ -262,7 +262,7 @@ public class CatalogoServiceImpl implements CatalogoService {
     @Override
     @Transactional(readOnly = true)
     public List<Ruta> listarRutas() {
-        return rutaRepository.findAll();
+        return rutaRepository.listarConCiudades();
     }
 
     @Override

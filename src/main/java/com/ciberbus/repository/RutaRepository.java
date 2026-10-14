@@ -18,6 +18,15 @@ public interface RutaRepository extends JpaRepository<Ruta, Integer> {
     long countByCiudadLlegada_IdCiudadAndEstado(Integer idCiudad, Integer estado);
 
     @Query("""
+            select r
+            from Ruta r
+            join fetch r.ciudadPartida
+            join fetch r.ciudadLlegada
+            order by r.idRuta
+            """)
+    List<Ruta> listarConCiudades();
+
+    @Query("""
             select distinct r.ciudadPartida
             from Ruta r
             where r.estado = 1

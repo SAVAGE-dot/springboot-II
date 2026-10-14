@@ -43,7 +43,7 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider())
                 .authorizeHttpRequests(auth -> auth
                         // Rutas públicas
-                        .requestMatchers("/", "/inicio", "/login", "/error",
+                        .requestMatchers("/", "/inicio", "/login", "/registro", "/error",
                                          "/css/**", "/js/**", "/images/**").permitAll()
                         // P4: buscar viajes y elegir asientos como invitado
                         .requestMatchers("/viajes/**").permitAll()
@@ -59,7 +59,11 @@ public class SecurityConfig {
                         .loginProcessingUrl("/login")
                         .usernameParameter("nroDocumento")
                         .passwordParameter("clave")
-                        .defaultSuccessUrl("/inicio", true)
+                        .successHandler((request, response, authentication) -> {
+                            boolean esAdmin = authentication.getAuthorities().stream()
+                                    .anyMatch(a -> "ROLE_ADMIN".equals(a.getAuthority()));
+                            response.sendRedirect(esAdmin ? "/admin" : "/inicio");
+                        })
                         .failureUrl("/login?error=true")
                         .permitAll()
                 )

@@ -37,11 +37,6 @@ public class AdminMaestrosController {
         this.catalogoService = catalogoService;
     }
 
-    @GetMapping
-    public String panel() {
-        return "redirect:/admin/ciudades";
-    }
-
     // ===== Ciudad =====
 
     @GetMapping("/ciudades")

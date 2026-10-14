@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(titulo)">
+    <meta charset="UTF-8">
+    <title th:text="${titulo}">CiberBus</title>
+    <link rel="stylesheet" th:href="@{/css/ciberbus.css}">
+</head>
+<body>
+<header class="app" th:fragment="header">
+    <div>
+        <h1>CiberBus</h1>
+        <p>Reserva de pasajes interprovinciales</p>
+    </div>
+    <nav>
+        <a th:href="@{/inicio}">Inicio</a>
+        <a th:href="@{/reserva/consultar}">Consultar reserva</a>
+        <a th:href="@{/reserva/mis-reservas}">Mis reservas</a>
+        <a th:if="${usuario != null && usuario.rol == 'ADMIN'}" th:href="@{/admin}">Admin</a>
+        <span th:if="${usuario != null}" th:text="${usuario.nombre}">Usuario</span>
+        <form id="formLogout" th:if="${usuario != null}" th:action="@{/logout}" method="post" style="display:inline;margin:0;">
+            <button type="submit">Salir</button>
+        </form>
+        <a th:if="${usuario == null}" th:href="@{/login}">Ingresar</a>
+        <a th:if="${usuario == null}" th:href="@{/registro}">Registrarse</a>
+    </nav>
+</header>
+<footer class="app" th:fragment="footer">
+    CiberBus — Lenguaje de Programación II
+</footer>
+</body>
+</html>

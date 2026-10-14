@@ -22,8 +22,34 @@ public interface ViajeRepository extends JpaRepository<Viaje, Integer> {
             """)
     java.util.Optional<Viaje> buscarDetallePorId(@Param("idViaje") Integer idViaje);
 
-    List<Viaje> findByRuta_CiudadPartida_IdCiudadAndRuta_CiudadLlegada_IdCiudadAndFechaSalida(
-            Integer idOrigen, Integer idDestino, LocalDate fechaSalida);
+    @Query("""
+            select distinct v
+            from Viaje v
+            join fetch v.ruta r
+            join fetch r.ciudadPartida
+            join fetch r.ciudadLlegada
+            join fetch v.bus
+            join fetch v.conductor
+            order by v.fechaSalida, v.horaSalida
+            """)
+    List<Viaje> listarConDetalle();
+
+    @Query("""
+            select v
+            from Viaje v
+            join fetch v.ruta r
+            join fetch r.ciudadPartida
+            join fetch r.ciudadLlegada
+            join fetch v.bus
+            where r.ciudadPartida.idCiudad = :idOrigen
+              and r.ciudadLlegada.idCiudad = :idDestino
+              and v.fechaSalida = :fecha
+            order by v.horaSalida
+            """)
+    List<Viaje> buscarPorOrigenDestinoFecha(
+            @Param("idOrigen") Integer idOrigen,
+            @Param("idDestino") Integer idDestino,
+            @Param("fecha") LocalDate fecha);
 
     long countByRuta_IdRutaAndEstado(Integer idRuta, Integer estado);
 

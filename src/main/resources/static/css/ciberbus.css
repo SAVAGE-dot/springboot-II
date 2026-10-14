@@ -1,0 +1,82 @@
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    margin: 0;
+    background: #f4f7fa;
+    color: #1a1a1a;
+}
+header.app {
+    background: #1b365d;
+    color: #fff;
+    padding: 16px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+header.app h1 { margin: 0; font-size: 24px; }
+header.app p { margin: 4px 0 0; color: #c5a46e; font-size: 13px; }
+header.app nav { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+header.app a, header.app button {
+    color: #fff;
+    text-decoration: none;
+    background: transparent;
+    border: 1px solid #c5a46e;
+    padding: 7px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+}
+header.app a:hover, header.app button:hover { background: #c5a46e; color: #1b365d; }
+main { padding: 28px; max-width: 960px; margin: 0 auto; }
+h2 { color: #1b365d; }
+label { display: block; font-weight: 600; margin-top: 12px; }
+input, select, textarea {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 420px;
+    padding: 9px;
+    margin-top: 4px;
+    border: 1px solid #c5ced6;
+    border-radius: 4px;
+    font: inherit;
+}
+button.btn, a.btn {
+    display: inline-block;
+    background: #1b365d;
+    color: #fff;
+    border: 0;
+    padding: 10px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 14px;
+}
+button.btn.oro { background: #c5a46e; color: #1b365d; }
+table { width: 100%; border-collapse: collapse; background: #fff; margin-top: 16px; }
+th, td { border: 1px solid #e2e8ee; padding: 8px 10px; text-align: left; font-size: 14px; }
+th { background: #1b365d; color: #fff; }
+.ok { background: #e8f5e9; border: 1px solid #81c784; padding: 10px 12px; border-radius: 4px; }
+.error { background: #ffe6e6; border: 1px solid #e57373; padding: 10px 12px; border-radius: 4px; }
+.note { color: #5b6570; font-size: 14px; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+.card { background: #fff; border: 1px solid #dbe2ea; border-radius: 8px; padding: 16px; }
+.card a { color: #1b365d; font-weight: 700; }
+footer.app { padding: 16px 28px; color: #5b6570; font-size: 13px; }
+.login-wrap { min-height: 80vh; display: flex; justify-content: center; align-items: center; }
+.login-box { background: #fff; padding: 32px; border-radius: 8px; width: 340px; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+.viaje { background: #fff; border: 1px solid #dbe2ea; border-radius: 8px; margin: 14px 0; padding: 20px; }
+.datos { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+.etiqueta { color: #5b6570; display: block; font-size: 13px; }
+.aviso { background: #fff3cd; border: 1px solid #ffe69c; border-radius: 8px; padding: 16px; }
+.leyenda { display: flex; gap: 16px; margin: 18px 0; flex-wrap: wrap; }
+.leyenda span { border-radius: 4px; padding: 7px 10px; }
+.disponible { background: #fff; border: 1px solid #1b365d; color: #1b365d; }
+.seleccionado { background: #1b365d; color: #fff; }
+.ocupado { background: #9aa3ad; color: #fff; }
+.mapa { background: #fff; border: 2px solid #1b365d; border-radius: 22px 22px 8px 8px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; padding: 26px; }
+.asiento { border-radius: 6px; cursor: pointer; font-weight: 700; height: 48px; width: 70px; }
+.asiento:disabled { cursor: not-allowed; }
+.tarjeta { background: #fff; border: 1px solid #dbe2ea; border-radius: 8px; margin: 16px 0; padding: 20px; }
+.form-ancho input, .form-ancho select { max-width: 100%; }

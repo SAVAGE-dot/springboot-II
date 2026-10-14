@@ -30,4 +30,13 @@ public interface ReservaRepository extends JpaRepository<Reserva, Integer> {
            "JOIN FETCH ru.ciudadLlegada cl " +
            "WHERE u.idUsuario = :idUsuario")
     List<Reserva> findByUsuarioIdWithDetails(@Param("idUsuario") Integer idUsuario);
+
+    @Query("SELECT r FROM Reserva r " +
+           "JOIN FETCH r.usuario u " +
+           "JOIN FETCH r.viaje v " +
+           "JOIN FETCH v.ruta ru " +
+           "JOIN FETCH ru.ciudadPartida cp " +
+           "JOIN FETCH ru.ciudadLlegada cl " +
+           "ORDER BY r.fechaReserva DESC")
+    List<Reserva> listarConDetalle();
 }

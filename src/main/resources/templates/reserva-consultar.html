@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{fragments/layout :: head('Consultar reserva · CiberBus')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+<main>
+    <h2>Consultar reserva</h2>
+    <p class="note">Escribe el código que te salió al comprar (ejemplo CB-EE30058D). No necesitas iniciar sesión.</p>
+    <form th:action="@{/reserva/consultar}" method="get">
+        <label>Código de reserva</label>
+        <input name="codigo" required placeholder="CB-XXXXXXXX">
+        <button class="btn" type="submit">Buscar</button>
+    </form>
+</main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

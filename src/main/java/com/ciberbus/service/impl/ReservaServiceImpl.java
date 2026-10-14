@@ -151,4 +151,32 @@ public class ReservaServiceImpl implements ReservaService {
 
         return reservaGuardada;
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<DetalleReserva> listarDetalles(Integer idReserva) {
+        return detalleReservaRepository.listarPorReserva(idReserva);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Reserva> listarTodas() {
+        return reservaRepository.listarConDetalle();
+    }
+
+    @Override
+    public Reserva cancelar(String codigoReserva) {
+        Reserva reserva = reservaRepository.findByCodigoReservaWithDetails(codigoReserva)
+                .orElseThrow(() -> new NegocioException("Reserva no encontrada"));
+        if ("CANCELADA".equalsIgnoreCase(reserva.getEstado())) {
+            throw new NegocioException("Esa reserva ya está cancelada.");
+        }
+        for (DetalleReserva detalle : detalleReservaRepository.listarPorReserva(reserva.getIdReserva())) {
+            ViajeAsiento asiento = detalle.getViajeAsiento();
+            asiento.setEstado(1);
+            viajeService.actualizarAsiento(asiento);
+        }
+        reserva.setEstado("CANCELADA");
+        return reservaRepository.save(reserva);
+    }
 }

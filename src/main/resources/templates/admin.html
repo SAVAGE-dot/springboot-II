@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{fragments/layout :: head('Admin · CiberBus')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+<main>
+    <h2>Panel del administrador</h2>
+    <p class="note">Desde aquí se cargan los datos que luego usa el cliente para buscar y reservar.</p>
+    <div class="cards">
+        <div class="card"><a th:href="@{/admin/ciudades}">Ciudades</a><p th:text="${totalCiudades}">0</p></div>
+        <div class="card"><a th:href="@{/admin/turnos}">Turnos</a><p th:text="${totalTurnos}">0</p></div>
+        <div class="card"><a th:href="@{/admin/buses}">Buses</a><p th:text="${totalBuses}">0</p></div>
+        <div class="card"><a th:href="@{/admin/conductores}">Conductores</a><p th:text="${totalConductores}">0</p></div>
+        <div class="card"><a th:href="@{/admin/rutas}">Rutas</a><p th:text="${totalRutas}">0</p></div>
+        <div class="card"><a th:href="@{/admin/viajes}">Viajes</a><p th:text="${totalViajes}">0</p></div>
+        <div class="card"><a th:href="@{/admin/reservas}">Reservas</a><p th:text="${totalReservas}">0</p></div>
+    </div>
+</main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

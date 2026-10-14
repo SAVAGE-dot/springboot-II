@@ -10,11 +10,13 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ciberbus.entity.Bus;
 import com.ciberbus.entity.Ciudad;
 import com.ciberbus.entity.Ruta;
 import com.ciberbus.entity.Viaje;
 import com.ciberbus.entity.ViajeAsiento;
 import com.ciberbus.exception.NegocioException;
+import com.ciberbus.repository.BusRepository;
 import com.ciberbus.repository.ViajeAsientoRepository;
 import com.ciberbus.repository.ViajeRepository;
 import com.ciberbus.repository.RutaRepository;
@@ -27,20 +29,23 @@ public class ViajeServiceImpl implements ViajeService {
     private final ViajeRepository viajeRepository;
     private final ViajeAsientoRepository viajeAsientoRepository;
     private final RutaRepository rutaRepository;
+    private final BusRepository busRepository;
 
     public ViajeServiceImpl(
             ViajeRepository viajeRepository,
             ViajeAsientoRepository viajeAsientoRepository,
-            RutaRepository rutaRepository) {
+            RutaRepository rutaRepository,
+            BusRepository busRepository) {
         this.viajeRepository = viajeRepository;
         this.viajeAsientoRepository = viajeAsientoRepository;
         this.rutaRepository = rutaRepository;
+        this.busRepository = busRepository;
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Viaje> listar() {
-        return viajeRepository.findAll();
+        return viajeRepository.listarConDetalle();
     }
 
     @Override
@@ -59,6 +64,34 @@ public class ViajeServiceImpl implements ViajeService {
     @Override
     public Viaje guardar(Viaje viaje) {
         return viajeRepository.save(viaje);
+    }
+
+    @Override
+    public Viaje guardarConAsientos(Viaje viaje) {
+        if (viaje.getBus() == null || viaje.getBus().getIdBus() == null) {
+            throw new NegocioException("Debe elegir un bus.");
+        }
+        Bus bus = busRepository.findById(viaje.getBus().getIdBus())
+                .orElseThrow(() -> new NegocioException("El bus no existe."));
+        viaje.setBus(bus);
+
+        Viaje guardado = viajeRepository.save(viaje);
+        List<ViajeAsiento> existentes = viajeAsientoRepository
+                .findByViaje_IdViajeOrderByPisoAscNroAsientoAsc(guardado.getIdViaje());
+        if (!existentes.isEmpty()) {
+            return guardado;
+        }
+
+        int total = bus.getNroAsientos() == null ? 40 : bus.getNroAsientos();
+        for (int nro = 1; nro <= total; nro++) {
+            ViajeAsiento asiento = new ViajeAsiento();
+            asiento.setViaje(guardado);
+            asiento.setNroAsiento(nro);
+            asiento.setPiso(1);
+            asiento.setEstado(1);
+            viajeAsientoRepository.save(asiento);
+        }
+        return guardado;
     }
 
     @Override
@@ -91,8 +124,7 @@ public class ViajeServiceImpl implements ViajeService {
         if (idOrigen == null || idDestino == null || fecha == null) {
             throw new NegocioException("Origen, destino y fecha son obligatorios.");
         }
-        return viajeRepository.findByRuta_CiudadPartida_IdCiudadAndRuta_CiudadLlegada_IdCiudadAndFechaSalida(
-                idOrigen, idDestino, fecha);
+        return viajeRepository.buscarPorOrigenDestinoFecha(idOrigen, idDestino, fecha);
     }
 
     @Override

@@ -1,37 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Elegir asientos · CiberBus</title>
-    <style>
-        body { background: #f4f7fa; color: #1a1a1a; font-family: Segoe UI, Arial, sans-serif; margin: 0; }
-        header { background: #1b365d; color: #fff; padding: 24px 32px; }
-        main { margin: 0 auto; max-width: 900px; padding: 28px; }
-        .detalle, .resumen { background: #fff; border: 1px solid #dbe2ea; border-radius: 8px; margin: 16px 0; padding: 18px; }
-        .detalle-grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); }
-        .etiqueta { color: #5b6570; display: block; font-size: 13px; }
-        .leyenda { display: flex; gap: 16px; margin: 18px 0; }
-        .leyenda span { border-radius: 4px; padding: 7px 10px; }
-        .disponible { background: #fff; border: 1px solid #1b365d; color: #1b365d; }
-        .seleccionado { background: #1b365d; color: #fff; }
-        .ocupado { background: #9aa3ad; color: #fff; }
-        .mapa { background: #fff; border: 2px solid #1b365d; border-radius: 22px 22px 8px 8px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; padding: 26px; }
-        .asiento { border-radius: 6px; cursor: pointer; font-weight: 700; height: 48px; width: 70px; }
-        .asiento:disabled { cursor: not-allowed; }
-        .continuar { background: #c5a46e; border: 0; cursor: pointer; font-size: 16px; font-weight: 700; padding: 12px 18px; }
-        a { color: #1b365d; }
-    </style>
-</head>
+<head th:replace="~{fragments/layout :: head('Elegir asientos · CiberBus')}"></head>
 <body>
-<header>
-    <h1>Elige tus asientos</h1>
-    <p th:text="|${viaje.ruta.ciudadPartida.ciudad} → ${viaje.ruta.ciudadLlegada.ciudad} · ${viaje.fechaSalida} ${viaje.horaSalida}|">Ruta</p>
-</header>
+<header th:replace="~{fragments/layout :: header}"></header>
 <main>
+    <h2>Elige tus asientos</h2>
+    <p class="note" th:text="|${viaje.ruta.ciudadPartida.ciudad} → ${viaje.ruta.ciudadLlegada.ciudad} · ${viaje.fechaSalida} ${viaje.horaSalida}|">Ruta</p>
     <p><a th:if="${rutaId != null and fecha != null}" th:href="@{/viajes/buscar(rutaId=${rutaId},fecha=${fecha})}">← Volver a los viajes</a></p>
-    <section class="detalle">
-        <div class="detalle-grid">
+    <section class="tarjeta">
+        <div class="datos">
             <div><span class="etiqueta">Código</span><strong th:text="${viaje.codigoViaje}">VIAJE</strong></div>
             <div><span class="etiqueta">Bus</span><strong th:text="${viaje.bus.tipoBus}">Bus</strong></div>
             <div><span class="etiqueta">Tarifa por asiento</span><strong th:text="|S/ ${viaje.tarifa}|">S/ 0.00</strong></div>
@@ -53,16 +30,17 @@
                     th:data-seleccionado="${asientosSeleccionados.contains(asiento.idViajeAsiento)}"
                     th:text="|P${asiento.piso} - ${asiento.nroAsiento}|">P1 - 1</button>
         </section>
-        <section class="resumen">
+        <section class="tarjeta">
             <span class="etiqueta">Asientos seleccionados</span>
             <strong id="seleccion">Ninguno</strong>
             <span class="etiqueta">Total estimado</span>
             <strong id="total" th:data-tarifa="${viaje.tarifa}">S/ 0.00</strong>
-            <p><button class="continuar" type="submit">Ver resumen</button></p>
+            <p><button class="btn oro" type="submit">Ver resumen</button></p>
             <small>La selección no crea una reserva ni bloquea los asientos.</small>
         </section>
     </form>
 </main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
 <script>
 const seleccionados = Array.from(document.querySelectorAll('.asiento[data-seleccionado="true"]'))
   .map(boton => boton.dataset.id);

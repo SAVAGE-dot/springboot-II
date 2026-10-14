@@ -69,8 +69,7 @@ public class ReservaController {
 
     @GetMapping("/asientos/{idViaje}")
     public String seleccionarAsientos(@PathVariable Integer idViaje, Model model) {
-        Viaje viaje = viajeService.buscarPorId(idViaje)
-                .orElseThrow(() -> new NegocioException("Viaje no encontrado"));
+        Viaje viaje = viajeService.buscarDetallePorId(idViaje);
         List<ViajeAsiento> asientos = viajeService.listarAsientos(idViaje);
 
         model.addAttribute("viaje", viaje);
@@ -84,12 +83,8 @@ public class ReservaController {
             @RequestParam List<Integer> asientosIds,
             Authentication authentication,
             Model model) {
-        Viaje viaje = viajeService.buscarPorId(idViaje)
-                .orElseThrow(() -> new NegocioException("Viaje no encontrado"));
-        List<ViajeAsiento> asientos = viajeService.listarAsientos(idViaje).stream()
-                .filter(a -> asientosIds.contains(a.getIdViajeAsiento()))
-                .toList();
-
+        Viaje viaje = viajeService.buscarDetallePorId(idViaje);
+        List<ViajeAsiento> asientos = viajeService.validarAsientosSeleccionados(idViaje, asientosIds);
         model.addAttribute("viaje", viaje);
         model.addAttribute("asientosSeleccionados", asientos);
         model.addAttribute("usuarioActual", usuarioActual(authentication));
@@ -133,12 +128,28 @@ public class ReservaController {
         }
     }
 
+    @GetMapping("/consultar")
+    public String consultarForm(@RequestParam(required = false) String codigo) {
+        if (codigo != null && !codigo.isBlank()) {
+            return "redirect:/reserva/detalle/" + codigo.trim().toUpperCase();
+        }
+        return "reserva-consultar";
+    }
+
     @GetMapping("/detalle/{codigo}")
     public String detalleReserva(@PathVariable String codigo, Model model) {
         Reserva reserva = reservaService.buscarPorCodigo(codigo)
                 .orElseThrow(() -> new NegocioException("Reserva no encontrada"));
         model.addAttribute("reserva", reserva);
+        model.addAttribute("detalles", reservaService.listarDetalles(reserva.getIdReserva()));
         return "reserva-detalle";
+    }
+
+    @PostMapping("/cancelar")
+    public String cancelar(@RequestParam String codigo, RedirectAttributes ra) {
+        Reserva reserva = reservaService.cancelar(codigo);
+        ra.addFlashAttribute("mensaje", "Reserva cancelada. Los asientos volvieron a estar libres.");
+        return "redirect:/reserva/detalle/" + reserva.getCodigoReserva();
     }
 
     @GetMapping("/mis-reservas")

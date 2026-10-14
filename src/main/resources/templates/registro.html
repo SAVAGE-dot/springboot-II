@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{fragments/layout :: head('Registro · CiberBus')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+<main class="login-wrap">
+<div class="login-box">
+    <h2>Crear cuenta</h2>
+    <p class="note">El documento será tu usuario para ingresar.</p>
+    <p class="error" th:if="${error}" th:text="${error}"></p>
+    <form th:action="@{/registro}" method="post">
+        <label>Nro. documento</label>
+        <input name="nroDocumento" th:value="${nroDocumento}" required>
+        <label>Nombre</label>
+        <input name="nombre" th:value="${nombre}" required>
+        <label>Apellido</label>
+        <input name="apellido" th:value="${apellido}" required>
+        <label>Correo</label>
+        <input type="email" name="correo" th:value="${correo}">
+        <label>Teléfono</label>
+        <input name="telefono" th:value="${telefono}">
+        <label>Clave (mínimo 6 caracteres)</label>
+        <input type="password" name="clave" required minlength="6">
+        <button class="btn" type="submit">Registrarme</button>
+    </form>
+    <p class="note">¿Ya tienes cuenta? <a th:href="@{/login}">Ingresar</a></p>
+</div>
+</main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

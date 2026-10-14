@@ -23,6 +23,8 @@ public interface ViajeService {
 
     Viaje guardar(Viaje viaje);
 
+    Viaje guardarConAsientos(Viaje viaje);
+
     List<Ciudad> listarOrigenesDisponibles();
 
     List<Ruta> listarDestinosPorOrigen(Integer idOrigen);

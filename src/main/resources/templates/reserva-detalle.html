@@ -1,70 +1,41 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Comprobante de Reserva - CiberBus</title>
-    <style>
-        body { font-family: Segoe UI, Arial, sans-serif; margin: 0; background: #f4f7fa; color: #1a1a1a; }
-        header { background: #1b365d; color: #fff; padding: 20px 32px; display: flex; justify-content: space-between; align-items: center; }
-        header a { color: #c5a46e; text-decoration: none; font-weight: bold; }
-        main { padding: 32px; max-width: 700px; margin: auto; }
-        .ticket { background: #fff; padding: 32px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-top: 6px solid #1b365d; }
-        .alert-success { background: #e6ffed; color: #0a0; padding: 12px; border-radius: 4px; margin-bottom: 20px; font-weight: bold; text-align: center; }
-        .info-row { display: flex; justify-content: space-between; margin-bottom: 12px; border-bottom: 1px solid #eee; padding-bottom: 8px; }
-        .btn { display: inline-block; background: #1b365d; color: #fff; padding: 10px 20px; border-radius: 4px; text-decoration: none; font-weight: bold; margin-top: 20px; }
-        .btn:hover { background: #284c82; }
-    </style>
-</head>
+<head th:replace="~{fragments/layout :: head('Comprobante · CiberBus')}"></head>
 <body>
-<header>
-    <h1>CiberBus · Comprobante</h1>
-    <div>
-        <a th:href="@{/reserva/buscar}">Nueva Búsqueda</a> | 
-        <a th:href="@{/reserva/mis-reservas}">Mis Reservas</a>
-    </div>
-</header>
+<header th:replace="~{fragments/layout :: header}"></header>
 <main>
-    <div th:if="${mensaje}" class="alert-success" th:text="${mensaje}"></div>
-
-    <div class="ticket">
-        <h2>Detalle de Reserva</h2>
-        <div class="info-row">
-            <span>Código de Reserva:</span>
-            <strong th:text="${reserva.codigoReserva}"></strong>
-        </div>
-        <div class="info-row">
-            <span>Estado:</span>
-            <strong th:text="${reserva.estado}" style="color: #0a0;"></strong>
-        </div>
-        <div class="info-row">
-            <span>Fecha de Reserva:</span>
-            <span th:text="${reserva.fechaReserva}"></span>
-        </div>
-        <div class="info-row">
-            <span>Usuario Comprador:</span>
-            <span th:text="${reserva.usuario.nombre + ' ' + reserva.usuario.apellido}"></span>
-        </div>
-        <div class="info-row">
-            <span>Ruta:</span>
-            <span th:text="${reserva.viaje.ruta.ciudadPartida.ciudad + ' ➔ ' + reserva.viaje.ruta.ciudadLlegada.ciudad}"></span>
-        </div>
-        <div class="info-row">
-            <span>Salida:</span>
-            <span th:text="${reserva.viaje.fechaSalida + ' ' + reserva.viaje.horaSalida}"></span>
-        </div>
-        <div class="info-row">
-            <span>Método de Pago:</span>
-            <span th:text="${reserva.metodoPago}"></span>
-        </div>
-        <div class="info-row">
-            <span>Monto Total:</span>
-            <strong th:text="${'S/ ' + reserva.montoTotal}" style="font-size: 18px; color: #1b365d;"></strong>
-        </div>
-
-        <div style="text-align: center;">
-            <a class="btn" th:href="@{/reserva/buscar}">Volver al Inicio</a>
-        </div>
-    </div>
+    <p class="ok" th:if="${mensaje}" th:text="${mensaje}"></p>
+    <section class="tarjeta">
+        <h2>Detalle de reserva</h2>
+        <p>Código: <strong th:text="${reserva.codigoReserva}"></strong></p>
+        <p>Estado: <strong th:text="${reserva.estado}"></strong></p>
+        <p>Fecha de reserva: <span th:text="${reserva.fechaReserva}"></span></p>
+        <p>Comprador: <span th:text="${reserva.usuario.nombre + ' ' + reserva.usuario.apellido}"></span></p>
+        <p>Ruta: <span th:text="${reserva.viaje.ruta.ciudadPartida.ciudad + ' → ' + reserva.viaje.ruta.ciudadLlegada.ciudad}"></span></p>
+        <p>Salida: <span th:text="${reserva.viaje.fechaSalida + ' ' + reserva.viaje.horaSalida}"></span></p>
+        <p>Pago: <span th:text="${reserva.metodoPago}"></span></p>
+        <p>Total: <strong th:text="${'S/ ' + reserva.montoTotal}"></strong></p>
+    </section>
+    <section class="tarjeta">
+        <h3>Pasajeros y asientos</h3>
+        <table>
+            <tr><th>Asiento</th><th>Piso</th><th>Pasajero</th><th>Documento</th><th>Precio</th></tr>
+            <tr th:each="d : ${detalles}">
+                <td th:text="${d.viajeAsiento.nroAsiento}"></td>
+                <td th:text="${d.viajeAsiento.piso}"></td>
+                <td th:text="${d.pasajero.nombre + ' ' + d.pasajero.apellido}"></td>
+                <td th:text="${d.pasajero.nroDocumento}"></td>
+                <td th:text="${'S/ ' + d.precioPagado}"></td>
+            </tr>
+        </table>
+    </section>
+    <form th:if="${reserva.estado == 'CONFIRMADA'}" th:action="@{/reserva/cancelar}" method="post"
+          onsubmit="return confirm('¿Cancelar esta reserva? Los asientos quedarán libres.');">
+        <input type="hidden" name="codigo" th:value="${reserva.codigoReserva}">
+        <button class="btn oro" type="submit">Cancelar reserva</button>
+    </form>
+    <p><a class="btn" th:href="@{/}">Volver al inicio</a></p>
 </main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
 </body>
 </html>

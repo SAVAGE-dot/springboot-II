@@ -62,8 +62,13 @@ public class UsuarioServiceImpl implements UsuarioService {
             throw new NegocioException("Ya existe un usuario con ese documento: "
                     + usuario.getNroDocumento());
         }
-        // Encriptar la clave antes de guardar
         usuario.setClave(passwordEncoder.encode(usuario.getClave()));
+        if (usuario.getRol() == null || usuario.getRol().isBlank()) {
+            usuario.setRol("CLIENTE");
+        }
+        if (usuario.getEstado() == null) {
+            usuario.setEstado(1);
+        }
         return usuarioRepository.save(usuario);
     }
 

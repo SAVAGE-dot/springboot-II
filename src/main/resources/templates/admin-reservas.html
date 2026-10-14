@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{fragments/layout :: head('Reservas · CiberBus')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+<main>
+    <p><a th:href="@{/admin}">← Volver al admin</a></p>
+    <h2>Reservas</h2>
+    <p class="note" th:if="${#lists.isEmpty(reservas)}">Aún no hay reservas.</p>
+    <table th:if="${!#lists.isEmpty(reservas)}">
+        <tr><th>Código</th><th>Cliente</th><th>Viaje</th><th>Fecha</th><th>Total</th><th>Estado</th><th></th></tr>
+        <tr th:each="r : ${reservas}">
+            <td th:text="${r.codigoReserva}"></td>
+            <td th:text="${r.usuario.nombre + ' ' + r.usuario.apellido}"></td>
+            <td th:text="${r.viaje.codigoViaje + ' · ' + r.viaje.ruta.ciudadPartida.ciudad + ' → ' + r.viaje.ruta.ciudadLlegada.ciudad}"></td>
+            <td th:text="${r.fechaReserva}"></td>
+            <td th:text="${'S/ ' + r.montoTotal}"></td>
+            <td th:text="${r.estado}"></td>
+            <td><a th:href="@{/reserva/detalle/{codigo}(codigo=${r.codigoReserva})}">Ver</a></td>
+        </tr>
+    </table>
+</main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

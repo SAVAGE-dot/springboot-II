@@ -3,6 +3,7 @@ package com.ciberbus.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.ciberbus.entity.DetalleReserva;
 import com.ciberbus.entity.Pasajero;
 import com.ciberbus.entity.Reserva;
 
@@ -16,4 +17,10 @@ public interface ReservaService {
     List<Reserva> listarPorUsuario(Integer idUsuario);
 
     Reserva crearReserva(Integer idUsuario, Integer idViaje, List<Integer> idAsientos, List<Pasajero> pasajeros, String metodoPago);
+
+    List<DetalleReserva> listarDetalles(Integer idReserva);
+
+    List<Reserva> listarTodas();
+
+    Reserva cancelar(String codigoReserva);
 }

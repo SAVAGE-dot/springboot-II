@@ -1,26 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Viajes disponibles · CiberBus</title>
-    <style>
-        body { font-family: Segoe UI, Arial, sans-serif; margin: 0; background: #f4f7fa; color: #1a1a1a; }
-        header { background: #1b365d; color: #fff; padding: 28px 32px; }
-        main { max-width: 900px; margin: 0 auto; padding: 32px; }
-        .viaje { background: #fff; border: 1px solid #dbe2ea; border-radius: 8px; margin: 14px 0; padding: 20px; }
-        .datos { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
-        .etiqueta { color: #5b6570; display: block; font-size: 13px; }
-        a { color: #1b365d; }
-        .aviso { background: #fff3cd; border: 1px solid #ffe69c; border-radius: 8px; padding: 16px; }
-    </style>
-</head>
+<head th:replace="~{fragments/layout :: head('Viajes disponibles · CiberBus')}"></head>
 <body>
-<header>
-    <h1>Viajes disponibles</h1>
-    <p th:text="|Fecha consultada: ${fecha}|">Fecha consultada</p>
-</header>
+<header th:replace="~{fragments/layout :: header}"></header>
 <main>
+    <h2>Viajes disponibles</h2>
+    <p class="note" th:text="|Fecha consultada: ${fecha}|">Fecha</p>
     <p><a th:href="@{/}">← Volver a la búsqueda</a></p>
 
     <div class="aviso" th:if="${#lists.isEmpty(viajes)}">
@@ -51,10 +36,11 @@
                 <strong th:text="|S/ ${viaje.tarifa}|">S/ 0.00</strong>
             </div>
             <div>
-                <a th:href="@{/viajes/{id}/asientos(id=${viaje.idViaje},rutaId=${viaje.ruta.idRuta},fecha=${fecha})}">Elegir asientos</a>
+                <a class="btn" th:href="@{/viajes/{id}/asientos(id=${viaje.idViaje},rutaId=${viaje.ruta.idRuta},fecha=${fecha})}">Elegir asientos</a>
             </div>
         </div>
     </article>
 </main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
 </body>
 </html>

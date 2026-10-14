@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>CiberBus — Error</title>
-</head>
+<head th:replace="~{fragments/layout :: head('Error · CiberBus')}"></head>
 <body>
-    <h1>No se pudo completar la operación</h1>
-    <p th:text="${mensaje}">Error</p>
-    <p><a href="/" th:href="@{/}">Volver al inicio</a></p>
+<header th:replace="~{fragments/layout :: header}"></header>
+<main>
+    <h2>No se pudo completar la operación</h2>
+    <p class="error" th:text="${mensaje}">Error</p>
+    <p><a class="btn" th:href="@{/}">Volver al inicio</a></p>
+</main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
 </body>
 </html>
