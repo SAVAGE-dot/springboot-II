@@ -1,17 +1,38 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head th:replace="~{fragments/layout :: head('Consultar reserva · CiberBus')}"></head>
-<body>
-<header th:replace="~{fragments/layout :: header}"></header>
-<main>
-    <h2>Consultar reserva</h2>
-    <p class="note">Escribe el código que te salió al comprar (ejemplo CB-EE30058D). No necesitas iniciar sesión.</p>
-    <form th:action="@{/reserva/consultar}" method="get">
-        <label>Código de reserva</label>
-        <input name="codigo" required placeholder="CB-XXXXXXXX">
-        <button class="btn" type="submit">Buscar</button>
-    </form>
+<head th:replace="~{fragments/publico :: head('Autogestión - CiberBus', '')}"></head>
+<body class="d-flex flex-column min-vh-100 bg-light">
+<header th:replace="~{fragments/publico :: navbar}"></header>
+<main class="flex-grow-1 d-flex align-items-center py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow-lg border-0 rounded-4">
+                    <div class="card-body p-5 bg-white rounded-4">
+                        <h3 class="fw-bold mb-3" style="color: #4f699c;">Mis viajes</h3>
+                        <p class="text-secondary">Ingresa tu código de reserva para consultar tu compra. No necesitas iniciar sesión.</p>
+                        <hr class="my-4 text-muted opacity-25">
+                        <form class="mt-4" th:action="@{/reserva/consultar}" method="get">
+                            <div class="row g-4">
+                                <div class="col-md-8">
+                                    <label class="form-label text-secondary small fw-bold">Código de reserva</label>
+                                    <input type="text" name="codigo" class="form-control form-control-lg shadow-sm"
+                                           placeholder="CB-XXXXXXXX" required>
+                                </div>
+                                <div class="col-md-4 d-flex align-items-end">
+                                    <button class="btn btn-warning fw-bold px-4 py-2 rounded-pill shadow-sm w-100" type="submit">
+                                        Consultar <i class="bi bi-search ms-2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </main>
-<footer th:replace="~{fragments/layout :: footer}"></footer>
+<footer th:replace="~{fragments/publico :: footer}"></footer>
+<th:block th:replace="~{fragments/publico :: scripts}"></th:block>
 </body>
 </html>

@@ -1,35 +1,74 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head th:replace="~{fragments/layout :: head('Asientos · CiberBus')}"></head>
-<body>
-<header th:replace="~{fragments/layout :: header}"></header>
-<main>
-    <p><a th:href="@{/reserva/buscar}">← Volver a búsqueda</a></p>
-    <h2>Viaje: <span th:text="${viaje.codigoViaje}"></span></h2>
-    <p>Ruta: <strong th:text="${viaje.ruta.ciudadPartida.ciudad + ' → ' + viaje.ruta.ciudadLlegada.ciudad}"></strong></p>
-    <p>Fecha: <strong th:text="${viaje.fechaSalida + ' ' + viaje.horaSalida}"></strong> · Tarifa: <strong th:text="${'S/ ' + viaje.tarifa}"></strong></p>
-    <form th:action="@{/reserva/checkout}" method="post">
-        <input type="hidden" name="idViaje" th:value="${viaje.idViaje}">
-        <section class="mapa">
-            <div th:each="a : ${asientos}">
-                <label th:if="${a.estado == 1}">
-                    <input type="checkbox" name="asientosIds" th:value="${a.idViajeAsiento}">
-                    <span class="asiento disponible" th:text="${'A' + a.nroAsiento}"></span>
-                </label>
-                <span th:if="${a.estado != 1}" class="asiento ocupado" th:text="${'A' + a.nroAsiento}"></span>
+<head th:replace="~{fragments/publico :: head('Selección de Asientos - CiberBus', 'asiento.css')}"></head>
+<body class="d-flex flex-column min-vh-100">
+<header th:replace="~{fragments/publico :: navbar}"></header>
+<main class="flex-grow-1 bg-light py-5">
+    <div class="container">
+        <h2 class="fw-bold mb-4" style="color: #4f699c;">Selección de asientos</h2>
+        <a th:href="@{/reserva/buscar}" class="btn btn-outline-secondary px-4 mb-3">
+            <i class="bi bi-arrow-left"></i> Volver a buscar
+        </a>
+        <div class="card shadow-sm border-0 rounded-4 mb-4">
+            <div class="card-body p-4">
+                <div class="row align-items-center text-center text-md-start g-3">
+                    <div class="col-md-2">
+                        <small class="text-secondary d-block">Código</small>
+                        <strong th:text="${viaje.codigoViaje}">VIAJE</strong>
+                    </div>
+                    <div class="col-md-4">
+                        <small class="text-secondary d-block">Ruta</small>
+                        <strong th:text="${viaje.ruta.ciudadPartida.ciudad + ' → ' + viaje.ruta.ciudadLlegada.ciudad}">Ruta</strong>
+                    </div>
+                    <div class="col-md-3">
+                        <small class="text-secondary d-block">Salida</small>
+                        <span class="fw-bold" th:text="${viaje.horaSalida}">08:00</span> -
+                        <small th:text="${viaje.fechaSalida}">Fecha</small>
+                    </div>
+                    <div class="col-md-3 text-md-end">
+                        <small class="text-secondary d-block">Tarifa</small>
+                        <span class="fs-5 text-success fw-bold" th:text="${'S/ ' + viaje.tarifa}">S/ 0.00</span>
+                    </div>
+                </div>
             </div>
-        </section>
-        <button class="btn oro" type="submit">Continuar con la reserva</button>
-    </form>
+        </div>
+        <div class="mb-4">
+            <span class="badge bg-white text-dark border px-3 py-2 me-2 shadow-sm">Disponible</span>
+            <span class="badge bg-secondary px-3 py-2 shadow-sm">Vendido</span>
+        </div>
+        <form th:action="@{/reserva/checkout}" method="post" id="formAsientosP5">
+            <input type="hidden" name="idViaje" th:value="${viaje.idViaje}">
+            <div class="card shadow-sm border-0 rounded-4 mb-4">
+                <div class="card-body p-4">
+                    <div class="row g-3 justify-content-center">
+                        <div class="col-auto" th:each="a : ${asientos}">
+                            <th:block th:if="${a.estado == 1}">
+                                <input type="checkbox" class="btn-check" name="asientosIds" th:id="|asiento${a.idViajeAsiento}|"
+                                       th:value="${a.idViajeAsiento}" autocomplete="off">
+                                <label class="btn btn-outline-primary asiento-btn shadow-sm" th:for="|asiento${a.idViajeAsiento}|"
+                                       th:text="${a.nroAsiento}">1</label>
+                            </th:block>
+                            <button type="button" th:if="${a.estado != 1}" class="btn btn-secondary asiento-btn shadow-sm" disabled
+                                    th:text="${a.nroAsiento}">1</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-warning btn-lg px-5 fw-bold shadow-sm" type="submit">
+                Continuar <i class="bi bi-arrow-right-circle ms-2"></i>
+            </button>
+        </form>
+    </div>
 </main>
-<footer th:replace="~{fragments/layout :: footer}"></footer>
+<footer th:replace="~{fragments/publico :: footer}"></footer>
+<th:block th:replace="~{fragments/publico :: scripts}"></th:block>
 <script>
-document.querySelector('form').addEventListener('submit', function (event) {
-  const cantidad = document.querySelectorAll('input[name="asientosIds"]:checked').length;
-  if (cantidad === 0 || cantidad > 5) {
-    event.preventDefault();
-    alert('Seleccione entre 1 y 5 asientos.');
-  }
+document.getElementById('formAsientosP5').addEventListener('submit', function (event) {
+    const cantidad = document.querySelectorAll('input[name="asientosIds"]:checked').length;
+    if (cantidad === 0 || cantidad > 5) {
+        event.preventDefault();
+        alert('Seleccione entre 1 y 5 asientos.');
+    }
 });
 </script>
 </body>

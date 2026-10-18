@@ -16,3 +16,4 @@ __pycache__/
 .cursor/
 log-error.txt
 log-arranque.txt
+capturas/

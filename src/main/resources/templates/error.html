@@ -1,13 +1,18 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head th:replace="~{fragments/layout :: head('Error · CiberBus')}"></head>
-<body>
-<header th:replace="~{fragments/layout :: header}"></header>
-<main>
-    <h2>No se pudo completar la operación</h2>
-    <p class="error" th:text="${mensaje}">Error</p>
-    <p><a class="btn" th:href="@{/}">Volver al inicio</a></p>
+<head th:replace="~{fragments/publico :: head('Error - CiberBus', '')}"></head>
+<body class="d-flex flex-column min-vh-100">
+<header th:replace="~{fragments/publico :: navbar}"></header>
+<main class="flex-grow-1 bg-light py-5">
+    <div class="container">
+        <div class="alert alert-danger shadow-sm rounded-4 border-0 p-4">
+            <h5 class="alert-heading"><i class="bi bi-x-circle"></i> No se pudo completar la operación</h5>
+            <p class="mb-0" th:text="${mensaje}">Error</p>
+            <a th:href="@{/inicio}" class="btn btn-outline-danger mt-3 px-4">Volver al inicio</a>
+        </div>
+    </div>
 </main>
-<footer th:replace="~{fragments/layout :: footer}"></footer>
+<footer th:replace="~{fragments/publico :: footer}"></footer>
+<th:block th:replace="~{fragments/publico :: scripts}"></th:block>
 </body>
 </html>

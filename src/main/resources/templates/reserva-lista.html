@@ -1,24 +1,47 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head th:replace="~{fragments/layout :: head('Mis reservas · CiberBus')}"></head>
-<body>
-<header th:replace="~{fragments/layout :: header}"></header>
-<main>
-    <h2 th:text="${'Reservas de ' + usuarioActual.nombre + ' ' + usuarioActual.apellido}">Reservas</h2>
-    <p class="note">También puedes <a th:href="@{/reserva/consultar}">consultar una reserva por código</a>.</p>
-    <table th:if="${reservas != null and !reservas.isEmpty()}">
-        <tr><th>Código</th><th>Viaje</th><th>Fecha</th><th>Total</th><th>Estado</th><th></th></tr>
-        <tr th:each="r : ${reservas}">
-            <td th:text="${r.codigoReserva}"></td>
-            <td th:text="${r.viaje.codigoViaje + ' (' + r.viaje.ruta.ciudadPartida.ciudad + ' → ' + r.viaje.ruta.ciudadLlegada.ciudad + ')'}"></td>
-            <td th:text="${r.fechaReserva}"></td>
-            <td th:text="${'S/ ' + r.montoTotal}"></td>
-            <td th:text="${r.estado}"></td>
-            <td><a th:href="@{/reserva/detalle/{codigo}(codigo=${r.codigoReserva})}">Ver detalle</a></td>
-        </tr>
-    </table>
-    <p class="note" th:if="${reservas != null and reservas.isEmpty()}">No hay reservas para este usuario.</p>
+<head th:replace="~{fragments/publico :: head('Mis reservas - CiberBus', '')}"></head>
+<body class="d-flex flex-column min-vh-100 bg-light">
+<header th:replace="~{fragments/publico :: navbar}"></header>
+<main class="flex-grow-1 py-5">
+    <div class="container">
+        <div class="card shadow-lg border-0 rounded-4">
+            <div class="card-body p-4 p-md-5">
+                <h3 class="fw-bold mb-3" style="color: #4f699c;"
+                    th:text="${'Reservas de ' + usuarioActual.nombre + ' ' + usuarioActual.apellido}">Mis reservas</h3>
+                <p class="text-secondary">También puedes <a th:href="@{/autogestion}">consultar una reserva por código</a>.</p>
+                <div class="table-responsive" th:if="${reservas != null and !reservas.isEmpty()}">
+                    <table class="table table-bordered align-middle">
+                        <thead class="table-light">
+                        <tr>
+                            <th>Código</th>
+                            <th>Viaje</th>
+                            <th>Fecha</th>
+                            <th>Total</th>
+                            <th>Estado</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="r : ${reservas}">
+                            <td th:text="${r.codigoReserva}"></td>
+                            <td th:text="${r.viaje.codigoViaje + ' (' + r.viaje.ruta.ciudadPartida.ciudad + ' → ' + r.viaje.ruta.ciudadLlegada.ciudad + ')'}"></td>
+                            <td th:text="${r.fechaReserva}"></td>
+                            <td th:text="${'S/ ' + r.montoTotal}"></td>
+                            <td th:text="${r.estado}"></td>
+                            <td><a class="btn btn-outline-primary btn-sm rounded-pill" th:href="@{/reserva/detalle/{codigo}(codigo=${r.codigoReserva})}">Ver detalle</a></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="alert alert-warning rounded-4 border-0" th:if="${reservas != null and reservas.isEmpty()}">
+                    No hay reservas para este usuario.
+                </div>
+            </div>
+        </div>
+    </div>
 </main>
-<footer th:replace="~{fragments/layout :: footer}"></footer>
+<footer th:replace="~{fragments/publico :: footer}"></footer>
+<th:block th:replace="~{fragments/publico :: scripts}"></th:block>
 </body>
 </html>

@@ -1,6 +1,8 @@
 package com.ciberbus.service.impl;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -74,6 +76,7 @@ public class ViajeServiceImpl implements ViajeService {
         Bus bus = busRepository.findById(viaje.getBus().getIdBus())
                 .orElseThrow(() -> new NegocioException("El bus no existe."));
         viaje.setBus(bus);
+        validarAltaViaje(viaje);
 
         Viaje guardado = viajeRepository.save(viaje);
         List<ViajeAsiento> existentes = viajeAsientoRepository
@@ -92,6 +95,53 @@ public class ViajeServiceImpl implements ViajeService {
             viajeAsientoRepository.save(asiento);
         }
         return guardado;
+    }
+
+    /**
+     * Se pueden crear varios viajes de la misma ruta y fecha (mañana, tarde, noche).
+     * Lo único que no se repite es el código, y el mismo bus/conductor a la misma hora.
+     */
+    private void validarAltaViaje(Viaje viaje) {
+        String codigo = viaje.getCodigoViaje() == null ? "" : viaje.getCodigoViaje().trim();
+        if (codigo.isBlank()) {
+            codigo = generarCodigoViaje(viaje.getFechaSalida(), viaje.getHoraSalida());
+        }
+        if (viajeRepository.existsByCodigoViaje(codigo)) {
+            throw new NegocioException(
+                    "Ya existe un viaje con el código " + codigo
+                            + ". Use otro código o déjelo vacío para generarlo automáticamente.");
+        }
+        viaje.setCodigoViaje(codigo);
+
+        Integer idBus = viaje.getBus().getIdBus();
+        Integer idConductor = viaje.getConductor() == null ? null : viaje.getConductor().getIdConductor();
+        LocalDate fecha = viaje.getFechaSalida();
+        LocalTime hora = viaje.getHoraSalida();
+
+        if (viajeRepository.existsByBus_IdBusAndFechaSalidaAndHoraSalida(idBus, fecha, hora)) {
+            throw new NegocioException(
+                    "Ese bus ya tiene un viaje el " + fecha + " a las " + hora
+                            + ". Puede reutilizarlo en otro horario del mismo día.");
+        }
+        if (idConductor != null
+                && viajeRepository.existsByConductor_IdConductorAndFechaSalidaAndHoraSalida(
+                        idConductor, fecha, hora)) {
+            throw new NegocioException(
+                    "Ese conductor ya tiene un viaje el " + fecha + " a las " + hora
+                            + ". Puede asignarlo a otro horario del mismo día.");
+        }
+    }
+
+    private String generarCodigoViaje(LocalDate fecha, LocalTime hora) {
+        String base = "CB-" + fecha.format(DateTimeFormatter.ofPattern("yyMMdd"))
+                + "-" + hora.format(DateTimeFormatter.ofPattern("HHmm"));
+        String codigo = base;
+        int sufijo = 2;
+        while (viajeRepository.existsByCodigoViaje(codigo)) {
+            codigo = base + "-" + sufijo;
+            sufijo++;
+        }
+        return codigo;
     }
 
     @Override

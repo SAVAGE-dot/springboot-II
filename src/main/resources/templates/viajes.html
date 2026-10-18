@@ -1,46 +1,61 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head th:replace="~{fragments/layout :: head('Viajes disponibles · CiberBus')}"></head>
-<body>
-<header th:replace="~{fragments/layout :: header}"></header>
-<main>
-    <h2>Viajes disponibles</h2>
-    <p class="note" th:text="|Fecha consultada: ${fecha}|">Fecha</p>
-    <p><a th:href="@{/}">← Volver a la búsqueda</a></p>
+<head th:replace="~{fragments/publico :: head('Listado de Viajes - CiberBus', 'viaje.css')}"></head>
+<body class="d-flex flex-column min-vh-100">
+<header th:replace="~{fragments/publico :: navbar}"></header>
+<main class="flex-grow-1">
+    <div class="container mt-5 mb-5">
+        <h2 class="viaje fw-bold mb-4">Viajes disponibles</h2>
+        <p class="text-secondary" th:if="${fecha}" th:text="|Fecha consultada: ${fecha}|">Fecha</p>
 
-    <div class="aviso" th:if="${#lists.isEmpty(viajes)}">
-        No se encontraron viajes disponibles para la ruta y fecha seleccionadas.
-    </div>
+        <div class="alert alert-warning shadow-sm rounded-4 border-0 p-4" th:if="${#lists.isEmpty(viajes)}">
+            <h5 class="alert-heading"><i class="bi bi-exclamation-triangle"></i> ¡Ups! No hay viajes programados</h5>
+            <p class="mb-0">No se encontraron viajes disponibles para la ruta y fecha seleccionadas. Intenta buscando en otro horario.</p>
+        </div>
+        <div class="mt-4" th:if="${#lists.isEmpty(viajes)}">
+            <a th:href="@{/inicio}" class="btn btn-outline-secondary px-4"><i class="bi bi-arrow-left"></i> Volver a buscar</a>
+        </div>
 
-    <article class="viaje" th:each="viaje : ${viajes}">
-        <h2 th:text="${viaje.codigoViaje}">VIA-001</h2>
-        <div class="datos">
-            <div>
-                <span class="etiqueta">Ruta</span>
-                <strong th:text="|${viaje.ruta.ciudadPartida.ciudad} → ${viaje.ruta.ciudadLlegada.ciudad}|">Origen → destino</strong>
-            </div>
-            <div>
-                <span class="etiqueta">Salida</span>
-                <strong th:text="${viaje.horaSalida}">08:00</strong>
-            </div>
-            <div>
-                <span class="etiqueta">Llegada</span>
-                <strong th:text="|${viaje.fechaLlegada} ${viaje.horaLlegada}|">Fecha y hora</strong>
-            </div>
-            <div>
-                <span class="etiqueta">Bus / asientos</span>
-                <strong th:text="|${viaje.bus.tipoBus} · ${viaje.bus.nroAsientos} asientos|">Bus</strong>
-            </div>
-            <div>
-                <span class="etiqueta">Tarifa</span>
-                <strong th:text="|S/ ${viaje.tarifa}|">S/ 0.00</strong>
-            </div>
-            <div>
-                <a class="btn" th:href="@{/viajes/{id}/asientos(id=${viaje.idViaje},rutaId=${viaje.ruta.idRuta},fecha=${fecha})}">Elegir asientos</a>
+        <div class="card mb-3 shadow-sm border-0 rounded-4" th:each="viaje : ${viajes}">
+            <div class="card-body p-4">
+                <div class="row align-items-center">
+                    <div class="col-md-2 col-sm-6 mb-3 mb-md-0">
+                        <p class="text-secondary mb-1 small">Código de Viaje</p>
+                        <p class="mb-0 fs-5"><strong th:text="${viaje.codigoViaje}">VIA-001</strong></p>
+                        <p class="mb-0 small text-muted" th:text="|${viaje.ruta.ciudadPartida.ciudad} → ${viaje.ruta.ciudadLlegada.ciudad}|">Ruta</p>
+                    </div>
+                    <div class="col-md-2 col-sm-6 mb-3 mb-md-0">
+                        <p class="text-secondary mb-1 small">Servicio / Asientos</p>
+                        <p class="mb-0"><strong th:text="${viaje.bus.tipoBus}">Bus</strong></p>
+                        <p class="mb-0 small text-muted" th:text="|${viaje.bus.nroAsientos} asientos totales|">Asientos</p>
+                    </div>
+                    <div class="col-md-2 col-sm-6 mb-3 mb-md-0 text-center">
+                        <p class="text-secondary mb-1 small">Salida</p>
+                        <p class="mb-0 fw-bold" th:text="${viaje.horaSalida}">08:00</p>
+                        <p class="mb-0 small text-muted" th:text="${viaje.fechaSalida}">Fecha</p>
+                    </div>
+                    <div class="col-md-1 d-none d-md-block text-center text-secondary fs-4">
+                        <i class="bi bi-arrow-right"></i>
+                    </div>
+                    <div class="col-md-2 col-sm-6 mb-3 mb-md-0 text-center">
+                        <p class="text-secondary mb-1 small">Llegada</p>
+                        <p class="mb-0 fw-bold" th:text="${viaje.horaLlegada}">18:00</p>
+                        <p class="mb-0 small text-muted" th:text="${viaje.fechaLlegada}">Fecha</p>
+                    </div>
+                    <div class="col-md-1 col-sm-6 mb-3 mb-md-0 text-center">
+                        <p class="text-secondary mb-1 small">Tarifa</p>
+                        <p class="mb-0 fs-5 text-success fw-bold" th:text="|S/ ${viaje.tarifa}|">S/ 0.00</p>
+                    </div>
+                    <div class="col-md-2 text-md-end text-center mt-3 mt-md-0">
+                        <a th:href="@{/viajes/{id}/asientos(id=${viaje.idViaje},rutaId=${viaje.ruta.idRuta},fecha=${fecha})}"
+                           class="btn btn-warning px-4 fw-bold shadow-sm">COMPRAR</a>
+                    </div>
+                </div>
             </div>
         </div>
-    </article>
+    </div>
 </main>
-<footer th:replace="~{fragments/layout :: footer}"></footer>
+<footer th:replace="~{fragments/publico :: footer}"></footer>
+<th:block th:replace="~{fragments/publico :: scripts}"></th:block>
 </body>
 </html>

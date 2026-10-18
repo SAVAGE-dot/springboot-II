@@ -44,6 +44,7 @@ public interface ViajeRepository extends JpaRepository<Viaje, Integer> {
             where r.ciudadPartida.idCiudad = :idOrigen
               and r.ciudadLlegada.idCiudad = :idDestino
               and v.fechaSalida = :fecha
+              and v.estado = 1
             order by v.horaSalida
             """)
     List<Viaje> buscarPorOrigenDestinoFecha(
@@ -56,6 +57,14 @@ public interface ViajeRepository extends JpaRepository<Viaje, Integer> {
     long countByBus_IdBusAndEstado(Integer idBus, Integer estado);
 
     long countByConductor_IdConductorAndEstado(Integer idConductor, Integer estado);
+
+    boolean existsByCodigoViaje(String codigoViaje);
+
+    boolean existsByBus_IdBusAndFechaSalidaAndHoraSalida(
+            Integer idBus, LocalDate fechaSalida, java.time.LocalTime horaSalida);
+
+    boolean existsByConductor_IdConductorAndFechaSalidaAndHoraSalida(
+            Integer idConductor, LocalDate fechaSalida, java.time.LocalTime horaSalida);
 
     @Query("""
             select v

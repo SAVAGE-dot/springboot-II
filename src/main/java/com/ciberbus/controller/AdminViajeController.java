@@ -44,7 +44,7 @@ public class AdminViajeController {
     }
 
     @PostMapping("/guardar")
-    public String guardar(@RequestParam String codigoViaje,
+    public String guardar(@RequestParam(required = false) String codigoViaje,
                           @RequestParam Integer idRuta,
                           @RequestParam Integer idBus,
                           @RequestParam Integer idConductor,
@@ -55,27 +55,31 @@ public class AdminViajeController {
                           @RequestParam BigDecimal tarifa,
                           @RequestParam(defaultValue = "1") Integer estado,
                           RedirectAttributes ra) {
-        Ruta ruta = catalogoService.buscarRuta(idRuta)
-                .orElseThrow(() -> new NegocioException("La ruta no existe."));
-        Bus bus = catalogoService.buscarBus(idBus)
-                .orElseThrow(() -> new NegocioException("El bus no existe."));
-        Conductor conductor = catalogoService.buscarConductor(idConductor)
-                .orElseThrow(() -> new NegocioException("El conductor no existe."));
+        try {
+            Ruta ruta = catalogoService.buscarRuta(idRuta)
+                    .orElseThrow(() -> new NegocioException("La ruta no existe."));
+            Bus bus = catalogoService.buscarBus(idBus)
+                    .orElseThrow(() -> new NegocioException("El bus no existe."));
+            Conductor conductor = catalogoService.buscarConductor(idConductor)
+                    .orElseThrow(() -> new NegocioException("El conductor no existe."));
 
-        Viaje viaje = new Viaje();
-        viaje.setCodigoViaje(codigoViaje.trim());
-        viaje.setRuta(ruta);
-        viaje.setBus(bus);
-        viaje.setConductor(conductor);
-        viaje.setFechaSalida(fechaSalida);
-        viaje.setHoraSalida(horaSalida);
-        viaje.setFechaLlegada(fechaLlegada);
-        viaje.setHoraLlegada(horaLlegada);
-        viaje.setTarifa(tarifa);
-        viaje.setEstado(estado);
+            Viaje viaje = new Viaje();
+            viaje.setCodigoViaje(codigoViaje == null ? "" : codigoViaje.trim());
+            viaje.setRuta(ruta);
+            viaje.setBus(bus);
+            viaje.setConductor(conductor);
+            viaje.setFechaSalida(fechaSalida);
+            viaje.setHoraSalida(horaSalida);
+            viaje.setFechaLlegada(fechaLlegada);
+            viaje.setHoraLlegada(horaLlegada);
+            viaje.setTarifa(tarifa);
+            viaje.setEstado(estado);
 
-        viajeService.guardarConAsientos(viaje);
-        ra.addFlashAttribute("ok", "Viaje guardado. Si era nuevo, se crearon los asientos del bus.");
+            viajeService.guardarConAsientos(viaje);
+            ra.addFlashAttribute("ok", "Viaje guardado. Se pueden crear varios horarios para la misma ruta y fecha.");
+        } catch (NegocioException e) {
+            ra.addFlashAttribute("error", e.getMessage());
+        }
         return "redirect:/admin/viajes";
     }
 }

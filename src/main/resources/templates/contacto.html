@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{fragments/publico :: head('Contacto - CiberBus', 'inicio.css')}"></head>
+<body class="d-flex flex-column min-vh-100">
+<header th:replace="~{fragments/publico :: navbar}"></header>
+
+<section>
+    <div id="miCarrusel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#miCarrusel" data-bs-slide-to="0" class="active"></button>
+            <button type="button" data-bs-target="#miCarrusel" data-bs-slide-to="1"></button>
+            <button type="button" data-bs-target="#miCarrusel" data-bs-slide-to="2"></button>
+        </div>
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img th:src="@{/imagenes/banner_contacto_recortado1.png}" class="d-block w-100" alt="Contacto 1">
+            </div>
+            <div class="carousel-item">
+                <img th:src="@{/imagenes/banner_contacto_2.png}" class="d-block w-100" alt="Contacto 2">
+            </div>
+            <div class="carousel-item">
+                <img th:src="@{/imagenes/banner_contacto_3.png}" class="d-block w-100" alt="Contacto 3">
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#miCarrusel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#miCarrusel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </div>
+</section>
+
+<section class="py-5 bg-light flex-grow-1">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h1 class="fw-bold display-4">Contáctanos</h1>
+            <p class="lead text-secondary">Estamos aquí para ayudarte. Escríbenos y te responderemos lo antes posible.</p>
+        </div>
+        <div class="alert alert-success" th:if="${ok}" th:text="${ok}">Mensaje enviado</div>
+        <div class="card border-0 shadow-lg rounded-4">
+            <div class="card-body p-5">
+                <h4 class="text-center fw-bold mb-4 text-uppercase">Contacta con nosotros</h4>
+                <form th:action="@{/contacto}" method="post">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <input type="text" class="form-control form-control-lg" name="nombre" placeholder="Nombre y Apellido" required>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="email" class="form-control form-control-lg" name="correo" placeholder="Correo electrónico" required>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control form-control-lg" name="telefono" placeholder="Teléfono">
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control form-control-lg" name="asunto" placeholder="Asunto">
+                        </div>
+                        <div class="col-12">
+                            <textarea class="form-control form-control-lg" name="mensaje" rows="5" placeholder="Escribe tu mensaje..." required></textarea>
+                        </div>
+                        <div class="col-12 text-end">
+                            <button class="btn btn-dark btn-lg px-5 shadow-sm" type="submit">Enviar mensaje</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer th:replace="~{fragments/publico :: footer}"></footer>
+<th:block th:replace="~{fragments/publico :: scripts}"></th:block>
+</body>
+</html>

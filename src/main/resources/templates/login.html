@@ -1,26 +1,59 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head th:replace="~{fragments/layout :: head('Login · CiberBus')}"></head>
-<body>
-<header th:replace="~{fragments/layout :: header}"></header>
-<main class="login-wrap">
-<div class="login-box">
-    <h2>Ingresar</h2>
-    <p class="note">Usa tu número de documento y tu clave.</p>
-    <form th:action="@{/login}" method="post">
-        <label for="nroDocumento">Nro. Documento</label>
-        <input type="text" id="nroDocumento" name="nroDocumento" required autofocus>
-        <label for="clave">Contraseña</label>
-        <input type="password" id="clave" name="clave" required>
-        <button class="btn" type="submit">Ingresar</button>
-    </form>
-    <p class="error" th:if="${param.error}">Usuario o contraseña incorrectos.</p>
-    <p class="ok" th:if="${param.logout}">Sesión cerrada correctamente.</p>
-    <p class="ok" th:if="${ok}" th:text="${ok}"></p>
-    <p class="note">¿No tienes cuenta? <a th:href="@{/registro}">Registrarse</a></p>
-    <p class="note">Admin de prueba: 12345678 / admin123<br>Cliente de prueba: 87654321 / cliente123</p>
-</div>
+<head th:replace="~{fragments/publico :: head('Iniciar sesión - CiberBus', '')}"></head>
+<body class="bg-light d-flex flex-column min-vh-100">
+<header th:replace="~{fragments/publico :: navbar}"></header>
+<main class="container flex-grow-1 d-flex align-items-center py-5">
+    <div class="row justify-content-center w-100 g-0">
+        <div class="col-12 col-md-8 col-lg-5 col-xl-4">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4 p-sm-5">
+                    <div class="text-center mb-4">
+                        <div class="mb-2"><i class="bi bi-bus-front text-warning display-3"></i></div>
+                        <h2 class="fw-bold" style="color: #002147; letter-spacing: -1px;">CiberBus</h2>
+                        <p class="text-muted small">Ingresa a tu cuenta para gestionar tus viajes</p>
+                    </div>
+                    <div class="alert alert-danger py-2" th:if="${param.error}">Usuario o contraseña incorrectos.</div>
+                    <div class="alert alert-success py-2" th:if="${param.logout}">Sesión cerrada correctamente.</div>
+                    <div class="alert alert-success py-2" th:if="${ok}" th:text="${ok}"></div>
+                    <form th:action="@{/login}" method="post">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small text-secondary">Nro. documento</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-person-vcard"></i></span>
+                                <input type="text" id="nroDocumento" name="nroDocumento" class="form-control bg-light border-start-0" placeholder="12345678" required autofocus>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold small text-secondary">Contraseña</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-lock"></i></span>
+                                <input type="password" id="clave" name="clave" class="form-control bg-light border-start-0" placeholder="••••••••" required>
+                            </div>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-warning py-2 fw-bold text-uppercase shadow-sm">
+                                Iniciar sesión <i class="bi bi-arrow-right-short ms-1"></i>
+                            </button>
+                        </div>
+                    </form>
+                    <div class="text-center mt-4">
+                        <p class="text-muted small mb-0">¿Aún no eres parte?
+                            <a th:href="@{/registro}" class="fw-bold text-decoration-none" style="color: #002147;">Crea tu cuenta</a>
+                        </p>
+                    </div>
+                    <p class="text-muted small mt-3 mb-0">Admin de prueba: 12345678 / admin123<br>Cliente de prueba: 87654321 / cliente123</p>
+                </div>
+            </div>
+            <div class="text-center mt-4">
+                <a th:href="@{/inicio}" class="btn btn-outline-secondary btn-sm rounded-pill px-4">
+                    <i class="bi bi-house-door me-2"></i> Volver a la página principal
+                </a>
+            </div>
+        </div>
+    </div>
 </main>
-<footer th:replace="~{fragments/layout :: footer}"></footer>
+<footer th:replace="~{fragments/publico :: footer}"></footer>
+<th:block th:replace="~{fragments/publico :: scripts}"></th:block>
 </body>
 </html>

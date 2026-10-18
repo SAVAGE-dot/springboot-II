@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{fragments/publico :: head('Destinos - CiberBus', 'destino.css')}"></head>
+<body class="d-flex flex-column min-vh-100">
+<header th:replace="~{fragments/publico :: navbar}"></header>
+
+<section class="m-0 p-0">
+    <img th:src="@{/imagenes/bannerDestino.png}" class="w-100 d-block banner-destino01" alt="Destinos CiberBus">
+</section>
+
+<main class="flex-grow-1">
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="titulo-destino fw-bold text-uppercase">Destinos</h2>
+                <p class="text-muted">Explora los destinos más populares</p>
+                <hr class="espacio mx-auto">
+            </div>
+            <div class="row g-4">
+                <div class="col-lg-3 col-md-4 col-sm-6" th:each="d : ${destinosPublicos}">
+                    <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden">
+                        <img th:src="@{/imagenes/{img}(img=${d.imagen})}" class="card-img-top" th:alt="${d.ciudad}">
+                        <div class="card-body text-center">
+                            <p class="destino-label mb-0 text-secondary">
+                                Viaja a <span class="text-dark fw-bold" th:text="${d.ciudad}">Ciudad</span>
+                            </p>
+                            <a href="#" class="btn btn-outline-primary btn-sm px-4 mt-3 rounded-pill fw-bold"
+                               data-bs-toggle="modal" th:attr="data-bs-target='#info' + ${d.id}">Ver más</a>
+                        </div>
+                    </div>
+                    <div class="modal fade" th:id="'info' + ${d.id}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header bg-primary text-white">
+                                    <h5 class="modal-title">
+                                        <i class="bi bi-geo-alt-fill me-2"></i>
+                                        <span th:text="${d.ciudad}">Ciudad</span>
+                                    </h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body text-center">
+                                    <img th:src="@{/imagenesModal/{img}(img=${d.modal})}" class="img-fluid rounded mb-3 shadow" th:alt="${d.ciudad}">
+                                    <p th:text="${d.texto}">Descripción</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <a class="btn btn-warning rounded-pill fw-bold" th:href="@{/inicio}">Buscar pasajes</a>
+                                    <button type="button" class="btn btn-outline-primary rounded-pill" data-bs-dismiss="modal">Cerrar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/publico :: footer}"></footer>
+<th:block th:replace="~{fragments/publico :: scripts}"></th:block>
+</body>
+</html>

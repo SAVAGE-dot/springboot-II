@@ -1,5 +1,6 @@
 -- Datos de prueba para P4: viajes y asientos.
 -- Periodo: del 20/09/2026 al 30/11/2026 (ambas fechas incluidas).
+-- Dos horarios por ruta y día para que la búsqueda muestre más de una opción.
 -- El script es idempotente: puede ejecutarse más de una vez sin duplicar viajes ni asientos.
 -- Rutas usadas: 6 Lima-Ica, 10 Arequipa-Cusco y 21 Trujillo-Lima.
 -- Requiere que 00_bd_reserva_buses.sql y 01_datos_prueba.sql hayan sido ejecutados.
@@ -40,6 +41,36 @@ WITH RECURSIVE fechas AS (
         21, 3, 3,
         fecha, '20:00:00',
         DATE_ADD(fecha, INTERVAL 1 DAY), '06:00:00',
+        90.00
+    FROM fechas
+
+    UNION ALL
+
+    SELECT
+        CONCAT('PR26-', DATE_FORMAT(fecha, '%m%d'), '-R06T'),
+        6, 4, 4,
+        fecha, '16:00:00',
+        fecha, '21:00:00',
+        55.00
+    FROM fechas
+
+    UNION ALL
+
+    SELECT
+        CONCAT('PR26-', DATE_FORMAT(fecha, '%m%d'), '-R10N'),
+        10, 5, 5,
+        fecha, '19:00:00',
+        DATE_ADD(fecha, INTERVAL 1 DAY), '05:00:00',
+        110.00
+    FROM fechas
+
+    UNION ALL
+
+    SELECT
+        CONCAT('PR26-', DATE_FORMAT(fecha, '%m%d'), '-R21M'),
+        21, 6, 6,
+        fecha, '08:00:00',
+        fecha, '18:00:00',
         90.00
     FROM fechas
 )
@@ -88,7 +119,7 @@ WHERE v.CodigoViaje LIKE 'PR26-%'
         END
   );
 
--- Verificación esperada tras la primera ejecución: 216 viajes y 10 080 asientos PR26.
+-- Verificación esperada tras la primera ejecución: 432 viajes (2 horarios por ruta y día).
 SELECT
     v.IdRuta,
     COUNT(*) AS viajes_generados,

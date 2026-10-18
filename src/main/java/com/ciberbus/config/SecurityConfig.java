@@ -44,7 +44,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Rutas públicas
                         .requestMatchers("/", "/inicio", "/login", "/registro", "/error",
-                                         "/css/**", "/js/**", "/images/**").permitAll()
+                                         "/destinos", "/contacto", "/autogestion",
+                                         "/css/**", "/js/**", "/images/**",
+                                         "/imagenes/**", "/imagenesModal/**").permitAll()
                         // P4: buscar viajes y elegir asientos como invitado
                         .requestMatchers("/viajes/**").permitAll()
                         // P5: reservar y consultar como invitado

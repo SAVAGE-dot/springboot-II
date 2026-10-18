@@ -1,43 +1,91 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head th:replace="~{fragments/layout :: head('Buscar viajes · CiberBus')}"></head>
-<body>
-<header th:replace="~{fragments/layout :: header}"></header>
-<main>
-    <h2>Buscar viaje</h2>
-    <p class="error" th:if="${error}" th:text="${error}"></p>
-    <p class="ok" th:if="${mensaje}" th:text="${mensaje}"></p>
-    <form th:action="@{/reserva/resultados}" method="get">
-        <label for="origen">Origen</label>
-        <select id="origen" name="origen" required>
-            <option value="">Seleccione origen</option>
-            <option th:each="c : ${ciudades}" th:value="${c.idCiudad}" th:text="${c.ciudad + ' (' + c.departamento + ')'}" th:selected="${c.idCiudad == origenSeleccionado}"></option>
-        </select>
-        <label for="destino">Destino</label>
-        <select id="destino" name="destino" required>
-            <option value="">Seleccione destino</option>
-            <option th:each="c : ${ciudades}" th:value="${c.idCiudad}" th:text="${c.ciudad + ' (' + c.departamento + ')'}" th:selected="${c.idCiudad == destinoSeleccionado}"></option>
-        </select>
-        <label for="fecha">Fecha de salida</label>
-        <input type="date" id="fecha" name="fecha" th:value="${fechaSeleccionada}" required>
-        <button class="btn" type="submit">Buscar viajes</button>
-    </form>
-    <div th:if="${viajes != null and !viajes.isEmpty()}">
-        <h3>Viajes disponibles</h3>
-        <table>
-            <tr><th>Código</th><th>Ruta</th><th>Salida</th><th>Llegada</th><th>Tarifa</th><th></th></tr>
-            <tr th:each="v : ${viajes}">
-                <td th:text="${v.codigoViaje}"></td>
-                <td th:text="${v.ruta.ciudadPartida.ciudad + ' → ' + v.ruta.ciudadLlegada.ciudad}"></td>
-                <td th:text="${v.fechaSalida + ' ' + v.horaSalida}"></td>
-                <td th:text="${v.fechaLlegada + ' ' + v.horaLlegada}"></td>
-                <td th:text="${'S/ ' + v.tarifa}"></td>
-                <td><a class="btn oro" th:href="@{/reserva/asientos/{id}(id=${v.idViaje})}">Ver asientos</a></td>
-            </tr>
-        </table>
+<head th:replace="~{fragments/publico :: head('Buscar viajes - CiberBus', 'inicio.css')}"></head>
+<body class="d-flex flex-column min-vh-100">
+<header th:replace="~{fragments/publico :: navbar}"></header>
+<main class="flex-grow-1 bg-light py-5">
+    <div class="container">
+        <div class="card buscador-card border-0 shadow-sm">
+            <div class="card-body p-4 bg-white rounded-4">
+                <h4 class="fw-bold mb-4 text-center" style="color: #4f699c;">
+                    <i class="bi bi-search"></i> Busca tu próximo viaje
+                </h4>
+                <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
+                <div class="alert alert-success" th:if="${mensaje}" th:text="${mensaje}"></div>
+                <form th:action="@{/reserva/resultados}" method="get">
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold" for="origen">Origen</label>
+                            <select class="form-select form-select-lg" id="origen" name="origen" required>
+                                <option value="">Seleccione origen</option>
+                                <option th:each="c : ${ciudades}" th:value="${c.idCiudad}"
+                                        th:text="${c.ciudad + ' (' + c.departamento + ')'}"
+                                        th:selected="${c.idCiudad == origenSeleccionado}"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold" for="destino">Destino</label>
+                            <select class="form-select form-select-lg" id="destino" name="destino" required>
+                                <option value="">Seleccione destino</option>
+                                <option th:each="c : ${ciudades}" th:value="${c.idCiudad}"
+                                        th:text="${c.ciudad + ' (' + c.departamento + ')'}"
+                                        th:selected="${c.idCiudad == destinoSeleccionado}"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold" for="fecha">Fecha de viaje</label>
+                            <input type="date" class="form-control form-control-lg" id="fecha" name="fecha"
+                                   th:value="${fechaSeleccionada}" required>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-warning btn-lg w-100 fw-bold" type="submit">
+                                <i class="bi bi-bus-front-fill"></i> Buscar Pasajes
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="mt-5" th:if="${viajes != null and !viajes.isEmpty()}">
+            <h2 class="fw-bold mb-4" style="color: #4f699c;">Viajes disponibles</h2>
+            <div class="card mb-3 shadow-sm border-0 rounded-4" th:each="v : ${viajes}">
+                <div class="card-body p-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-3">
+                            <p class="text-secondary mb-1 small">Código de Viaje</p>
+                            <p class="mb-0 fs-5"><strong th:text="${v.codigoViaje}"></strong></p>
+                            <p class="mb-0 small text-muted" th:text="${v.ruta.ciudadPartida.ciudad + ' → ' + v.ruta.ciudadLlegada.ciudad}"></p>
+                        </div>
+                        <div class="col-md-2 text-center">
+                            <p class="text-secondary mb-1 small">Salida</p>
+                            <p class="mb-0 fw-bold" th:text="${v.horaSalida}"></p>
+                            <p class="mb-0 small text-muted" th:text="${v.fechaSalida}"></p>
+                        </div>
+                        <div class="col-md-1 d-none d-md-block text-center text-secondary fs-4"><i class="bi bi-arrow-right"></i></div>
+                        <div class="col-md-2 text-center">
+                            <p class="text-secondary mb-1 small">Llegada</p>
+                            <p class="mb-0 fw-bold" th:text="${v.horaLlegada}"></p>
+                            <p class="mb-0 small text-muted" th:text="${v.fechaLlegada}"></p>
+                        </div>
+                        <div class="col-md-2 text-center">
+                            <p class="text-secondary mb-1 small">Tarifa</p>
+                            <p class="mb-0 fs-5 text-success fw-bold" th:text="${'S/ ' + v.tarifa}"></p>
+                        </div>
+                        <div class="col-md-2 text-md-end text-center mt-3 mt-md-0">
+                            <a class="btn btn-warning px-4 fw-bold shadow-sm" th:href="@{/reserva/asientos/{id}(id=${v.idViaje})}">COMPRAR</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="alert alert-warning shadow-sm rounded-4 border-0 p-4 mt-4" th:if="${viajes != null and viajes.isEmpty()}">
+            <h5 class="alert-heading"><i class="bi bi-exclamation-triangle"></i> ¡Ups! No hay viajes programados</h5>
+            <p class="mb-0">No se encontraron viajes para esos datos.</p>
+        </div>
     </div>
-    <p class="note" th:if="${viajes != null and viajes.isEmpty()}">No se encontraron viajes para esos datos.</p>
 </main>
-<footer th:replace="~{fragments/layout :: footer}"></footer>
+<footer th:replace="~{fragments/publico :: footer}"></footer>
+<th:block th:replace="~{fragments/publico :: scripts}"></th:block>
 </body>
 </html>

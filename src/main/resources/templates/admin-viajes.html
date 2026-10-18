@@ -6,11 +6,12 @@
 <main>
     <p><a th:href="@{/admin}">← Volver al admin</a></p>
     <h2>Viajes</h2>
-    <p class="note">Al crear un viaje nuevo se generan automáticamente los asientos (uno por cada asiento del bus).</p>
+    <p class="note">Puede registrar <strong>varios viajes de la misma ruta y fecha</strong> (por ejemplo 08:00, 14:00 y 22:00). El bus y el conductor se pueden reutilizar en otro horario. Al crear un viaje se generan los asientos del bus.</p>
     <p class="ok" th:if="${ok}" th:text="${ok}"></p>
+    <p class="error" th:if="${error}" th:text="${error}"></p>
     <form th:action="@{/admin/viajes/guardar}" method="post">
-        <label>Código del viaje</label>
-        <input name="codigoViaje" required placeholder="CB-001">
+        <label>Código del viaje (opcional)</label>
+        <input name="codigoViaje" placeholder="Vacío = se genera solo">
         <label>Ruta</label>
         <select name="idRuta" required>
             <option value="">Seleccione</option>

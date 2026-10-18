@@ -1,62 +1,128 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head th:replace="~{fragments/layout :: head('Confirmar reserva · CiberBus')}"></head>
-<body>
-<header th:replace="~{fragments/layout :: header}"></header>
-<main>
-    <h2>Confirmación de reserva</h2>
-    <form th:action="@{/reserva/procesar}" method="post">
-        <input type="hidden" name="idViaje" th:value="${viaje.idViaje}">
-        <div th:each="a : ${asientosSeleccionados}">
-            <input type="hidden" name="asientosIds" th:value="${a.idViajeAsiento}">
-        </div>
-        <section class="tarjeta">
-            <h3>Resumen del viaje</h3>
-            <p>Ruta: <strong th:text="${viaje.ruta.ciudadPartida.ciudad + ' → ' + viaje.ruta.ciudadLlegada.ciudad}"></strong></p>
-            <p>Fecha y hora: <strong th:text="${viaje.fechaSalida + ' ' + viaje.horaSalida}"></strong></p>
-            <p>Asientos:
-                <span th:each="a, iterStat : ${asientosSeleccionados}"
-                      th:text="${'A' + a.nroAsiento + (!iterStat.last ? ', ' : '')}"></span>
-            </p>
-            <p>Monto total: <strong th:text="${'S/ ' + (viaje.tarifa * asientosSeleccionados.size())}"></strong></p>
-        </section>
-        <section class="tarjeta">
-            <h3>Comprador</h3>
-            <p>
-                <strong th:text="${usuarioActual.nombre + ' ' + usuarioActual.apellido}">Invitado</strong>
-                <span th:if="${usuarioActual.nroDocumento == 'GUEST'}"> (invitado, sin sesión)</span>
-            </p>
-        </section>
-        <section class="tarjeta" th:each="a : ${asientosSeleccionados}">
-            <h3 th:text="${'Pasajero del asiento A' + a.nroAsiento + ' (piso ' + a.piso + ')'}">Pasajero</h3>
-            <label>Tipo de documento</label>
-            <select name="tipoDocumento" required>
-                <option value="DNI">DNI</option>
-                <option value="Pasaporte">Pasaporte</option>
-            </select>
-            <label>Nro. documento</label>
-            <input type="text" name="nroDocumento" required>
-            <label>Nombre</label>
-            <input type="text" name="nombre" required>
-            <label>Apellido</label>
-            <input type="text" name="apellido" required>
-            <label>Correo</label>
-            <input type="email" name="correo">
-            <label>Teléfono</label>
-            <input type="text" name="telefono">
-        </section>
-        <section class="tarjeta">
-            <h3>Método de pago (simulado)</h3>
-            <label>Método</label>
-            <select name="metodoPago" required>
-                <option value="TARJETA_CREDITO">Tarjeta de crédito / débito</option>
-                <option value="YAPE_PLIN">Yape / Plin</option>
-                <option value="EFECTIVO">Efectivo en counter</option>
-            </select>
-            <button class="btn" type="submit">Confirmar y pagar</button>
-        </section>
-    </form>
+<head th:replace="~{fragments/publico :: head('Reserva de Pasajes - CiberBus', '')}"></head>
+<body class="d-flex flex-column min-vh-100">
+<header th:replace="~{fragments/publico :: navbar}"></header>
+<main class="flex-grow-1 bg-light py-5">
+    <div class="container">
+        <h2 class="fw-bold mb-4" style="color: #4f699c;">Detalles de los pasajeros</h2>
+        <form th:action="@{/reserva/procesar}" method="post" id="formReserva" class="needs-validation" novalidate>
+            <input type="hidden" name="idViaje" th:value="${viaje.idViaje}">
+            <div th:each="a : ${asientosSeleccionados}">
+                <input type="hidden" name="asientosIds" th:value="${a.idViajeAsiento}">
+            </div>
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="alert alert-primary bg-white shadow-sm border-0 rounded-4 p-4 mb-4">
+                        <h5 class="fw-bold text-primary mb-2"><i class="bi bi-person-lines-fill me-2"></i> Información obligatoria</h5>
+                        <p class="mb-0 text-secondary">
+                            Complete los datos de los pasajeros según el documento de identidad. Estos datos son necesarios para el abordaje.
+                            <span th:if="${usuarioActual.nroDocumento == 'GUEST'}"> Estás comprando como invitado.</span>
+                        </p>
+                    </div>
+                    <div class="card shadow-sm border-0 rounded-4 mb-4" th:each="a, iter : ${asientosSeleccionados}">
+                        <div class="card-header bg-white border-bottom-0 pt-4 pb-0 px-4">
+                            <h5 class="fw-bold text-dark">
+                                Pasajero <span th:text="${iter.count}">1</span>
+                                <span class="badge bg-primary ms-2" th:text="|Asiento ${a.nroAsiento} (piso ${a.piso})|">Asiento</span>
+                            </h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-3">
+                                    <label class="form-label text-secondary small fw-bold">Tipo Documento</label>
+                                    <select class="form-select" name="tipoDocumento" required>
+                                        <option value="DNI">DNI</option>
+                                        <option value="CE">CE</option>
+                                        <option value="Pasaporte">Pasaporte</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-secondary small fw-bold">N° Documento</label>
+                                    <input type="text" class="form-control" name="nroDocumento" required maxlength="12">
+                                </div>
+                                <div class="col-md-5">
+                                    <label class="form-label text-secondary small fw-bold">Nombres</label>
+                                    <input type="text" class="form-control" name="nombre" required>
+                                </div>
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-md-5">
+                                    <label class="form-label text-secondary small fw-bold">Apellidos</label>
+                                    <input type="text" class="form-control" name="apellido" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-secondary small fw-bold">Correo electrónico</label>
+                                    <input type="email" class="form-control" name="correo">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label text-secondary small fw-bold">Teléfono</label>
+                                    <input type="text" class="form-control" name="telefono" maxlength="9">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card shadow-sm border-0 rounded-4" style="position: sticky; top: 20px;">
+                        <div class="card-body p-4">
+                            <h5 class="fw-bold text-dark mb-4"><i class="bi bi-cart-check me-2"></i> Resumen de compra</h5>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-secondary">Código de viaje</span>
+                                <span class="fw-bold" th:text="${viaje.codigoViaje}">VIAJE</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-secondary">Servicio</span>
+                                <span class="fw-bold" th:text="${viaje.bus.tipoBus}">Bus</span>
+                            </div>
+                            <hr class="text-muted opacity-25">
+                            <div class="mb-3">
+                                <small class="text-secondary d-block">Salida</small>
+                                <span class="fw-bold" th:text="${viaje.fechaSalida}">Fecha</span> -
+                                <span th:text="${viaje.horaSalida}">Hora</span>
+                            </div>
+                            <div class="mb-3">
+                                <small class="text-secondary d-block">Llegada estimada</small>
+                                <span class="fw-bold" th:text="${viaje.fechaLlegada}">Fecha</span> -
+                                <span th:text="${viaje.horaLlegada}">Hora</span>
+                            </div>
+                            <hr class="text-muted opacity-25">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-secondary" th:text="|Asientos (${asientosSeleccionados.size()})|">Asientos</span>
+                                <span class="fw-bold">
+                                    <th:block th:each="a, iter : ${asientosSeleccionados}">
+                                        <span th:text="${a.nroAsiento}">1</span><span th:unless="${iter.last}">, </span>
+                                    </th:block>
+                                </span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-3">
+                                <span class="text-secondary">Tarifa unitaria</span>
+                                <span class="fw-bold" th:text="|S/ ${viaje.tarifa}|">S/ 0.00</span>
+                            </div>
+                            <div class="p-3 bg-light rounded-3 mb-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="fw-bold fs-5">TOTAL</span>
+                                    <span class="fw-bold fs-4 text-success"
+                                          th:text="|S/ ${viaje.tarifa * asientosSeleccionados.size()}|">S/ 0.00</span>
+                                </div>
+                            </div>
+                            <label class="form-label text-secondary small fw-bold">Método de pago (simulado)</label>
+                            <select class="form-select mb-3" name="metodoPago" required>
+                                <option value="TARJETA_CREDITO">Tarjeta de crédito / débito</option>
+                                <option value="YAPE_PLIN">Yape / Plin</option>
+                                <option value="EFECTIVO">Efectivo en counter</option>
+                            </select>
+                            <button type="submit" class="btn btn-warning btn-lg w-100 fw-bold shadow-sm">
+                                Pagar y Reservar <i class="bi bi-credit-card ms-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
 </main>
-<footer th:replace="~{fragments/layout :: footer}"></footer>
+<footer th:replace="~{fragments/publico :: footer}"></footer>
+<th:block th:replace="~{fragments/publico :: scripts}"></th:block>
 </body>
 </html>

@@ -9,12 +9,12 @@
 <header class="app" th:fragment="header">
     <div>
         <h1>CiberBus</h1>
-        <p>Reserva de pasajes interprovinciales</p>
+        <p>Plataforma de gestión de reservas</p>
     </div>
     <nav>
-        <a th:href="@{/inicio}">Inicio</a>
-        <a th:href="@{/reserva/consultar}">Consultar reserva</a>
-        <a th:href="@{/reserva/mis-reservas}">Mis reservas</a>
+        <a th:href="@{/inicio}">Sitio público</a>
+        <a th:href="@{/admin}">Panel</a>
+        <a th:href="@{/admin/reservas}">Reservas</a>
         <a th:if="${usuario != null && usuario.rol == 'ADMIN'}" th:href="@{/admin}">Admin</a>
         <span th:if="${usuario != null}" th:text="${usuario.nombre}">Usuario</span>
         <form id="formLogout" th:if="${usuario != null}" th:action="@{/logout}" method="post" style="display:inline;margin:0;">

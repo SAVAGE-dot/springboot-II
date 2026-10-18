@@ -1,30 +1,92 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head th:replace="~{fragments/layout :: head('Resumen · CiberBus')}"></head>
-<body>
-<header th:replace="~{fragments/layout :: header}"></header>
-<main>
-    <h2>Resumen de selección</h2>
-    <p class="note">Todavía no se ha creado ninguna reserva.</p>
-    <p><a th:href="@{/viajes/{id}/asientos(id=${viaje.idViaje},rutaId=${rutaId},fecha=${fecha},asientoIds=${asientoIds})}">← Modificar asientos</a></p>
-    <section class="tarjeta">
-        <h2 th:text="${viaje.codigoViaje}">Viaje</h2>
-        <p th:text="|${viaje.ruta.ciudadPartida.ciudad} → ${viaje.ruta.ciudadLlegada.ciudad}|">Ruta</p>
-        <p th:text="|Salida: ${viaje.fechaSalida} ${viaje.horaSalida}|">Salida</p>
-        <p th:text="|Bus: ${viaje.bus.tipoBus} · ${viaje.bus.nroAsientos} asientos|">Bus</p>
-    </section>
-    <section class="tarjeta">
-        <h3>Asientos elegidos</h3>
-        <p th:each="asiento : ${asientos}" th:text="|Piso ${asiento.piso}, asiento ${asiento.nroAsiento} · S/ ${viaje.tarifa}|">Asiento</p>
-        <p th:text="|Total estimado: S/ ${total}|">Total</p>
-    </section>
-    <form th:action="@{/reserva/checkout}" method="post">
-        <input type="hidden" name="idViaje" th:value="${viaje.idViaje}">
-        <input type="hidden" name="asientosIds" th:each="asiento : ${asientos}" th:value="${asiento.idViajeAsiento}">
-        <p><button class="btn" type="submit">Continuar a reserva</button></p>
-    </form>
-    <p><a th:if="${rutaId != null and fecha != null}" th:href="@{/viajes/buscar(rutaId=${rutaId},fecha=${fecha})}">Buscar otro viaje</a></p>
+<head th:replace="~{fragments/publico :: head('Resumen de compra - CiberBus', '')}"></head>
+<body class="d-flex flex-column min-vh-100">
+<header th:replace="~{fragments/publico :: navbar}"></header>
+<main class="flex-grow-1 bg-light py-5">
+    <div class="container">
+        <h2 class="fw-bold mb-4" style="color: #4f699c;">Resumen de selección</h2>
+        <p class="text-secondary">Todavía no se ha creado ninguna reserva. Confirma los asientos y continúa con los datos de los pasajeros.</p>
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="card shadow-sm border-0 rounded-4 mb-4">
+                    <div class="card-body p-4">
+                        <h4 class="fw-bold">Detalle del viaje</h4>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <p><strong>Código de viaje:</strong><br><span th:text="${viaje.codigoViaje}">VIAJE</span></p>
+                            </div>
+                            <div class="col-md-4">
+                                <p><strong>Bus:</strong><br><span th:text="${viaje.bus.tipoBus}">Bus</span></p>
+                            </div>
+                            <div class="col-md-4">
+                                <p><strong>Precio por asiento:</strong><br>S/ <span th:text="${viaje.tarifa}">0.00</span></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Salida:</strong><br>
+                                    <span th:text="${viaje.fechaSalida}">Fecha</span> - <span th:text="${viaje.horaSalida}">Hora</span>
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Llegada:</strong><br>
+                                    <span th:text="${viaje.fechaLlegada}">Fecha</span> - <span th:text="${viaje.horaLlegada}">Hora</span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="mb-0"><strong>Origen:</strong> <span th:text="${viaje.ruta.ciudadPartida.ciudad}">Origen</span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-0"><strong>Destino:</strong> <span th:text="${viaje.ruta.ciudadLlegada.ciudad}">Destino</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card shadow-sm border-0 rounded-4">
+                    <div class="card-body p-4">
+                        <h4 class="fw-bold">Asientos elegidos</h4>
+                        <hr>
+                        <p th:each="asiento : ${asientos}"
+                           th:text="|Piso ${asiento.piso}, asiento ${asiento.nroAsiento} · S/ ${viaje.tarifa}|">Asiento</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card shadow-sm border-0 rounded-4" style="position: sticky; top: 20px;">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold text-dark mb-4"><i class="bi bi-cart-check me-2"></i> Resumen de compra</h5>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-secondary">Pasajes</span>
+                            <span class="fw-bold" th:text="${asientos.size()}">0</span>
+                        </div>
+                        <div class="p-3 bg-light rounded-3 mb-4">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fw-bold fs-5">TOTAL</span>
+                                <span class="fw-bold fs-4 text-success" th:text="|S/ ${total}|">S/ 0.00</span>
+                            </div>
+                        </div>
+                        <form th:action="@{/reserva/checkout}" method="post">
+                            <input type="hidden" name="idViaje" th:value="${viaje.idViaje}">
+                            <input type="hidden" name="asientosIds" th:each="asiento : ${asientos}" th:value="${asiento.idViajeAsiento}">
+                            <button type="submit" class="btn btn-warning btn-lg w-100 fw-bold shadow-sm">
+                                Continuar a reserva <i class="bi bi-arrow-right-circle ms-2"></i>
+                            </button>
+                        </form>
+                        <a class="btn btn-outline-secondary w-100 mt-2"
+                           th:href="@{/viajes/{id}/asientos(id=${viaje.idViaje},rutaId=${rutaId},fecha=${fecha},asientoIds=${asientoIds})}">
+                            Modificar asientos
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </main>
-<footer th:replace="~{fragments/layout :: footer}"></footer>
+<footer th:replace="~{fragments/publico :: footer}"></footer>
+<th:block th:replace="~{fragments/publico :: scripts}"></th:block>
 </body>
 </html>

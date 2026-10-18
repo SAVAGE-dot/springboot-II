@@ -5,7 +5,7 @@
 <header th:replace="~{fragments/layout :: header}"></header>
 <main>
     <h2>Panel del administrador</h2>
-    <p class="note">Desde aquí se cargan los datos que luego usa el cliente para buscar y reservar.</p>
+    <p class="note">Plataforma de gestión: ciudades, rutas, viajes y reservas. El sitio público con el diseño comercial está en <a th:href="@{/inicio}">Inicio</a>.</p>
     <div class="cards">
         <div class="card"><a th:href="@{/admin/ciudades}">Ciudades</a><p th:text="${totalCiudades}">0</p></div>
         <div class="card"><a th:href="@{/admin/turnos}">Turnos</a><p th:text="${totalTurnos}">0</p></div>

@@ -1,31 +1,59 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head th:replace="~{fragments/layout :: head('Registro · CiberBus')}"></head>
-<body>
-<header th:replace="~{fragments/layout :: header}"></header>
-<main class="login-wrap">
-<div class="login-box">
-    <h2>Crear cuenta</h2>
-    <p class="note">El documento será tu usuario para ingresar.</p>
-    <p class="error" th:if="${error}" th:text="${error}"></p>
-    <form th:action="@{/registro}" method="post">
-        <label>Nro. documento</label>
-        <input name="nroDocumento" th:value="${nroDocumento}" required>
-        <label>Nombre</label>
-        <input name="nombre" th:value="${nombre}" required>
-        <label>Apellido</label>
-        <input name="apellido" th:value="${apellido}" required>
-        <label>Correo</label>
-        <input type="email" name="correo" th:value="${correo}">
-        <label>Teléfono</label>
-        <input name="telefono" th:value="${telefono}">
-        <label>Clave (mínimo 6 caracteres)</label>
-        <input type="password" name="clave" required minlength="6">
-        <button class="btn" type="submit">Registrarme</button>
-    </form>
-    <p class="note">¿Ya tienes cuenta? <a th:href="@{/login}">Ingresar</a></p>
-</div>
+<head th:replace="~{fragments/publico :: head('Crear cuenta - CiberBus', '')}"></head>
+<body class="bg-light d-flex flex-column min-vh-100">
+<header th:replace="~{fragments/publico :: navbar}"></header>
+<main class="container flex-grow-1 d-flex align-items-center py-5">
+    <div class="row justify-content-center w-100 g-0">
+        <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4 p-sm-5">
+                    <div class="text-center mb-4">
+                        <div class="mb-2"><i class="bi bi-person-plus text-warning display-3"></i></div>
+                        <h2 class="fw-bold" style="color: #002147;">Crear cuenta</h2>
+                        <p class="text-muted small">El documento será tu usuario para ingresar.</p>
+                    </div>
+                    <div class="alert alert-danger py-2" th:if="${error}" th:text="${error}"></div>
+                    <form th:action="@{/registro}" method="post">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small text-secondary">Nro. documento</label>
+                            <input class="form-control" name="nroDocumento" th:value="${nroDocumento}" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold small text-secondary">Nombre</label>
+                                <input class="form-control" name="nombre" th:value="${nombre}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold small text-secondary">Apellido</label>
+                                <input class="form-control" name="apellido" th:value="${apellido}" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small text-secondary">Correo</label>
+                            <input type="email" class="form-control" name="correo" th:value="${correo}">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small text-secondary">Teléfono</label>
+                            <input class="form-control" name="telefono" th:value="${telefono}">
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold small text-secondary">Clave (mínimo 6 caracteres)</label>
+                            <input type="password" class="form-control" name="clave" required minlength="6">
+                        </div>
+                        <div class="d-grid">
+                            <button class="btn btn-warning py-2 fw-bold text-uppercase" type="submit">Registrarme</button>
+                        </div>
+                    </form>
+                    <p class="text-muted small text-center mt-4 mb-0">¿Ya tienes cuenta?
+                        <a th:href="@{/login}" class="fw-bold text-decoration-none" style="color: #002147;">Ingresar</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
 </main>
-<footer th:replace="~{fragments/layout :: footer}"></footer>
+<footer th:replace="~{fragments/publico :: footer}"></footer>
+<th:block th:replace="~{fragments/publico :: scripts}"></th:block>
 </body>
 </html>

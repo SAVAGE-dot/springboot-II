@@ -1,38 +1,148 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head th:replace="~{fragments/layout :: head(${titulo})}"></head>
-<body>
-<header th:replace="~{fragments/layout :: header}"></header>
-<main>
-    <h2>Busca tu próximo viaje</h2>
-    <p class="note">Elige origen, destino y fecha. Luego seleccionas hasta 5 asientos y pasas a reservar.</p>
+<head th:replace="~{fragments/publico :: head('Inicio - CiberBus', 'inicio.css')}"></head>
+<body class="d-flex flex-column min-vh-100">
+<header th:replace="~{fragments/publico :: navbar}"></header>
 
-    <form method="get" th:action="@{/viajes/buscar}">
-        <label for="origenId">Origen</label>
-        <select id="origenId" name="origenId" onchange="window.location.href='/?origenId=' + this.value">
-            <option value="">Seleccione un origen</option>
-            <option th:each="origen : ${origenes}"
-                    th:value="${origen.idCiudad}"
-                    th:text="${origen.ciudad}"
-                    th:selected="${origen.idCiudad == origenId}">Ciudad de origen</option>
-        </select>
+<section>
+    <div id="miCarrusel" class="carousel slide mt-3" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#miCarrusel" data-bs-slide-to="0" class="active"></button>
+            <button type="button" data-bs-target="#miCarrusel" data-bs-slide-to="1"></button>
+            <button type="button" data-bs-target="#miCarrusel" data-bs-slide-to="2"></button>
+        </div>
+        <div class="carousel-inner rounded-4">
+            <div class="carousel-item active">
+                <img th:src="@{/imagenes/banner_inicio_01.png}" class="d-block w-100" alt="Destino 1">
+            </div>
+            <div class="carousel-item">
+                <img th:src="@{/imagenes/banner_inicio_02.png}" class="d-block w-100" alt="Destino 2">
+            </div>
+            <div class="carousel-item">
+                <img th:src="@{/imagenes/banner_inicio_03.png}" class="d-block w-100" alt="Destino 3">
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#miCarrusel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#miCarrusel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </div>
+</section>
 
-        <label for="rutaId">Destino</label>
-        <select id="rutaId" name="rutaId" required th:disabled="${#lists.isEmpty(destinos)}">
-            <option value="" th:text="${#lists.isEmpty(destinos) ? 'Seleccione primero un origen' : 'Seleccione un destino'}">Seleccione un destino</option>
-            <option th:each="ruta : ${destinos}"
-                    th:value="${ruta.idRuta}"
-                    th:text="${ruta.ciudadLlegada.ciudad}">Ciudad de destino</option>
-        </select>
+<div class="container mb-4">
+    <div class="card buscador-card border-0">
+        <div class="card-body p-4 bg-white rounded-4">
+            <h4 class="fw-bold mb-4 text-center" style="color: #4f699c;">
+                <i class="bi bi-search"></i> Busca tu próximo viaje
+            </h4>
+            <form id="formBusqueda" method="get" th:action="@{/viajes/buscar}">
+                <div class="row g-3 align-items-center">
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold" for="origenId">Origen</label>
+                        <select class="form-select form-select-lg" id="origenId" name="origenId"
+                                onchange="window.location.href='/?origenId=' + this.value">
+                            <option value="">Seleccione origen</option>
+                            <option th:each="origen : ${origenes}"
+                                    th:value="${origen.idCiudad}"
+                                    th:text="${origen.ciudad}"
+                                    th:selected="${origen.idCiudad == origenId}">Ciudad de origen</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold" for="rutaId">Destino</label>
+                        <select class="form-select form-select-lg" id="rutaId" name="rutaId" required
+                                th:disabled="${#lists.isEmpty(destinos)}">
+                            <option value="" th:text="${#lists.isEmpty(destinos) ? 'Seleccione primero un origen' : 'Seleccione destino'}">Seleccione destino</option>
+                            <option th:each="ruta : ${destinos}"
+                                    th:value="${ruta.idRuta}"
+                                    th:text="${ruta.ciudadLlegada.ciudad}">Ciudad de destino</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold" for="fecha">Fecha de viaje</label>
+                        <input type="date" class="form-control form-control-lg" id="fecha" name="fecha" required>
+                    </div>
+                    <div class="col-md-3 mt-auto">
+                        <button type="submit" class="btn btn-warning btn-lg w-100 fw-bold"
+                                th:disabled="${#lists.isEmpty(destinos)}">
+                            <i class="bi bi-bus-front-fill"></i> Buscar Pasajes
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
-        <label for="fecha">Fecha de viaje</label>
-        <input id="fecha" name="fecha" type="date" required>
+<div class="container mt-5">
+    <h2 class="text-center py-4 fw-bold" style="color: #4f699c;">¡Te llevamos a diferentes destinos!</h2>
+    <div class="row">
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+            <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden">
+                <img th:src="@{/imagenes/abancay.png}" class="card-img-top" alt="Abancay">
+                <div class="card-body">
+                    <p class="destino-label mb-0">Viaja a <span class="text-dark fw-bold">Abancay</span></p>
+                    <small class="text-secondary">Saliendo de Lima</small>
+                    <div class="d-flex justify-content-end mt-3">
+                        <a th:href="@{/destinos}" class="btn btn-outline-primary px-3">Ver más</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+            <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden">
+                <img th:src="@{/imagenes/arequipa.png}" class="card-img-top" alt="Arequipa">
+                <div class="card-body">
+                    <p class="destino-label mb-0">Viaja a <span class="text-dark fw-bold">Arequipa</span></p>
+                    <small class="text-secondary">Saliendo de Lima</small>
+                    <div class="d-flex justify-content-end mt-3">
+                        <a th:href="@{/destinos}" class="btn btn-outline-primary px-3">Ver más</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+            <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden">
+                <img th:src="@{/imagenes/ayacucho.png}" class="card-img-top" alt="Ayacucho">
+                <div class="card-body">
+                    <p class="destino-label mb-0">Viaja a <span class="text-dark fw-bold">Ayacucho</span></p>
+                    <small class="text-secondary">Saliendo de Lima</small>
+                    <div class="d-flex justify-content-end mt-3">
+                        <a th:href="@{/destinos}" class="btn btn-outline-primary px-3">Ver más</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+            <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden">
+                <img th:src="@{/imagenes/Amazonas.png}" class="card-img-top" alt="Amazonas">
+                <div class="card-body">
+                    <p class="destino-label mb-0">Viaja a <span class="text-dark fw-bold">Amazonas</span></p>
+                    <small class="text-secondary">Saliendo de Lima</small>
+                    <div class="d-flex justify-content-end mt-3">
+                        <a th:href="@{/destinos}" class="btn btn-outline-primary px-3">Ver más</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-        <button class="btn oro" type="submit" th:disabled="${#lists.isEmpty(destinos)}">Buscar viajes</button>
-    </form>
+<div class="container mt-4" style="margin-bottom: 120px;">
+    <div class="row">
+        <div class="col-12 text-center">
+            <a th:href="@{/destinos}"
+               class="btn px-5 py-3 fw-bold shadow-sm"
+               style="background-color: #4f699c; color: white; border-radius: 10px; border: none; display: inline-block; text-decoration: none;">
+                VER TODOS LOS DESTINOS
+            </a>
+        </div>
+    </div>
+</div>
 
-    <p class="note">Ciudades cargadas en la base: <strong th:text="${totalCiudades}">0</strong></p>
-</main>
-<footer th:replace="~{fragments/layout :: footer}"></footer>
+<footer th:replace="~{fragments/publico :: footer}"></footer>
+<th:block th:replace="~{fragments/publico :: scripts}"></th:block>
 </body>
 </html>
