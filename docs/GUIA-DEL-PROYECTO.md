@@ -3,6 +3,13 @@
 Este documento explica el sistema **como si nunca hubieras visto Spring Boot**.
 Sirve para entender, instalar, usar y defender el proyecto en la sustentación.
 
+Documentos del repo (solo Markdown, no Word):
+
+| Archivo | Para qué |
+|---|---|
+| [COMO-FUNCIONA-EL-CODIGO.md](COMO-FUNCIONA-EL-CODIGO.md) | Controllers, services, `@GetMapping`, `@Override`, `@Transactional`, repository, security y `pom.xml` |
+| [diseno-bd-jpa.md](diseno-bd-jpa.md) | Diseño de las 11 tablas y cómo se mapean con JPA |
+
 ---
 
 ## 1. ¿Qué es CiberBus?
@@ -32,7 +39,7 @@ El trabajo se dividió en 6 frentes. En el código, cada frente tiene sus clases
 |---|---|---|---|
 | P1 Arquitectura | Ernesto Silva | Armó el proyecto, las capas y las tablas JPA | `entity`, `repository`, `config`, esta guía |
 | P2 Seguridad | Cristian Arellano | Login, registro, roles ADMIN/CLIENTE, clave encriptada | `SecurityConfig`, `UsuarioService`, `RegistroController` |
-| P3 Maestros | Antonio Ospina | CRUD de ciudad, turno, bus, conductor y ruta | `CatalogoService`, `AdminMaestroController` |
+| P3 Maestros | Antonio Ospina | CRUD de ciudad, turno, bus, conductor y ruta | `CatalogoService`, `AdminMaestrosController` |
 | P4 Viajes | Kelly Yaipen | Buscar viaje, mapa de asientos, crear viajes | `ViajeService`, `ViajeController`, `AdminViajeController` |
 | P5 Reserva | Brando Sandoval | Checkout, consultar por código, cancelar, comprobante | `ReservaService`, `ReservaController` |
 | P6 Frontend | Luis Paredes | Encabezado, CSS y pantallas Thymeleaf | `templates/`, `static/css/ciberbus.css` |
@@ -156,8 +163,7 @@ Si no hay viaje para esa fecha, el cliente no verá resultados. Eso es normal.
 3. Abre y ejecuta, en este orden:
    - `sql/00_bd_reserva_buses.sql` (crea `bd_reserva_buses` y las tablas)
    - `sql/01_datos_prueba.sql` (ciudades, buses, etc. si el script existe)
-   - `sql/02_viajes_prueba_sep_nov_2026.sql` (viajes de prueba, si lo necesitan)
-
+   - `sqln
 Si Hibernate tiene `ddl-auto: update`, también puede crear/ajustar columnas al arrancar.
 Aun así, es más seguro correr el SQL primero.
 

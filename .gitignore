@@ -9,6 +9,8 @@ target/
 .DS_Store
 application-local.yml
 *.xlsx
+*.docx
+docs/GUION-VIDEO.md
 _build_plan_excel.py
 __pycache__/
 .cursor/

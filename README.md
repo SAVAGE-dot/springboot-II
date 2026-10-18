@@ -7,9 +7,11 @@ Sistema de reserva de pasajes interprovinciales. Curso **5484 Lenguaje de Progra
 - Delegada: Kelly del Pilar Yaipen Sevillano
 - Docente: Yan Carlos Bocanegra Pinchi
 
-**Guía completa (paso a paso, desde lo básico):** [docs/GUIA-DEL-PROYECTO.md](docs/GUIA-DEL-PROYECTO.md)
+**Documentación (solo Markdown):**
 
-Diseño de BD (sección 7.3): [docs/diseno-bd-jpa.md](docs/diseno-bd-jpa.md)
+- [docs/GUIA-DEL-PROYECTO.md](docs/GUIA-DEL-PROYECTO.md) — cómo instalar y usar
+- [docs/COMO-FUNCIONA-EL-CODIGO.md](docs/COMO-FUNCIONA-EL-CODIGO.md) — controllers, services, anotaciones, `pom.xml`
+- [docs/diseno-bd-jpa.md](docs/diseno-bd-jpa.md) — diseño de la base de datos JPA
 
 ## Qué hace el sistema
 
